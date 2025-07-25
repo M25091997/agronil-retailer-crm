@@ -14,11 +14,28 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('email')->unique()->default('');
+            $table->string('phone')->unique()->default('');
+            $table->string('otp', 6)->default('');
+            $table->string('pincode')->default('');
+            $table->timestamp('otp_expires_at')->nullable();
+            $table->boolean('verified')->default(false);
+            $table->timestamp('phone_verified_at')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('profile_picture')->default('');
+            $table->string('avatar')->default('');
+            $table->string('fcm_token')->default('');
+            $table->string('google_id')->default('');
+            $table->string('latitude')->default('');
+            $table->string('longitude')->default('');
+            $table->string('city')->default('');
+            $table->string('referral_code')->default('')->unique();
+            $table->boolean('status')->default(false);
+            $table->string('role')->default('');
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

@@ -1,17 +1,49 @@
 <?php
 
+use App\Http\Controllers\BrandController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DiseaseController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SubCategoryController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+// Route::get('/', function () {
+//     return Inertia::render('Welcome', [
+//         'canLogin' => Route::has('login'),
+//         'canRegister' => Route::has('register'),
+//         'laravelVersion' => Application::VERSION,
+//         'phpVersion' => PHP_VERSION,
+//     ]);
+// });
+
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+    return Inertia::location('/login');
+});
+
+Route::prefix('admin')->middleware('auth')->group(function () {
+    Route::get('/', function () {
+        return Inertia::render('Dashboard');
+    })->name('admin.dashboard');
+
+    // Route::resource('/categories', CategoryController::class);
+    Route::resource('/categories', CategoryController::class)->names('admin.categories');
+    Route::resource('/sub-categories', SubCategoryController::class);
+    Route::resource('/brands', BrandController::class);
+    Route::resource('/diseases', DiseaseController::class);
+
+
+    // Route::get('/category', function () {
+    //     return Inertia::render('Admin/Category/CategoryList');
+    // });
+    // Route::get('/category/add', function () {
+    //     return Inertia::render('Admin/Category/CategoryAdd');
+    // });
+});
+
+Route::get('/', function () {
+    return Inertia::location('/login');
 });
 
 Route::get('/dashboard', function () {
@@ -24,4 +56,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
