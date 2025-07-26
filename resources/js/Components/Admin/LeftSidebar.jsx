@@ -1,5 +1,5 @@
 import { Link } from "@inertiajs/react";
-import { HousePlus, Settings, KeySquare } from "lucide-react";
+import { HousePlus, Settings, KeySquare, List, LucideBoxes } from "lucide-react";
 import { useState } from "react";
 import { usePage } from "@inertiajs/react";
 
@@ -7,6 +7,7 @@ export default function LeftSidebar() {
     const [openDropdowns, setOpenDropdowns] = useState({
         masterkey: false,
         settings: false,
+        products: false,
     });
 
     const { url } = usePage();
@@ -71,6 +72,11 @@ export default function LeftSidebar() {
                                         Diseases
                                     </Link>
                                 </li>
+                                <li>
+                                    <Link href="/admin/home-banners">
+                                        Home Banners
+                                    </Link>
+                                </li>
                             </ul>
                         )}
                     </li>
@@ -96,6 +102,27 @@ export default function LeftSidebar() {
                                         Users
                                     </Link>
                                 </li>
+                            </ul>
+                        )}
+                    </li>
+
+                    {/* Product Dropdown */}
+                    <li>
+                        <div
+                            className="has-arrow cursor-pointer d-flex align-items-center gap-2 p-2"
+                            onClick={() => toggleDropdown("products")}
+                        >
+                            <LucideBoxes />
+                            <span data-key="t-products">Products</span>
+                        </div>
+                        {openDropdowns.products && (
+                            <ul className="sub-menu" aria-expanded="true">
+                                <li>
+                                    <Link href="/admin/products">
+                                        Product
+                                    </Link>
+                                </li>
+
                             </ul>
                         )}
                     </li>

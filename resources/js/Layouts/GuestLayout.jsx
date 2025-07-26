@@ -1,5 +1,6 @@
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import { Link } from '@inertiajs/react';
+import '../../css/auth.css';
 
 export default function GuestLayout({ children }) {
     return (

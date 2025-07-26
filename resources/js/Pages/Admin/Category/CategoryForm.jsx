@@ -145,9 +145,10 @@ export default function CategoryForm({ category = null }) {
                                     <div className="mb-3">
                                         <label className="form-label">Category Name <span className="text-danger">*</span></label>
                                         <input
+                                            className="form-control"
                                             type="text"
                                             name="name"
-                                            className="form-control"
+
                                             value={form.name}
                                             onChange={(e) => setForm({ ...form, name: e.target.value })}
                                         />
@@ -159,9 +160,10 @@ export default function CategoryForm({ category = null }) {
                                     <div className="mb-3">
                                         <label className="form-label">Category image <span className="text-danger">*</span></label>
                                         <input
+                                            className="form-control"
                                             type="file"
                                             name="image"
-                                            className="form-control"
+
                                             ref={fileInputRef}
                                             onChange={(e) => setForm({ ...form, image: e.target.files[0] })}
                                         />

@@ -9,7 +9,7 @@ export default function CardHeader({ title, btnName, url }) {
                 <div className="flex-shrink-0">
                     <div className="d-flex flex-wrap gap-2 mb-0 my-n1">
                         <Link href={url}>
-                            <button type="button" className="btn btn-dark waves-effect waves-light d-flex align-items-center gap-1">
+                            <button type="button" className="btn btn-dark btn-sm waves-effect waves-light d-flex align-items-center gap-1">
                                 <Plus size={16} />
                                 {btnName}
                             </button>

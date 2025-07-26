@@ -17,7 +17,7 @@ class DiseaseController extends Controller
     public function index()
     {
         return Inertia::render('Admin/Diseases/DiseasesList', [
-            'diseases' => Disease::latest()->get(),
+            'diseases' => Disease::with('category')->latest()->get(),
         ]);
     }
 

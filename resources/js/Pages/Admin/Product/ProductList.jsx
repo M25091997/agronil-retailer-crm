@@ -1,53 +1,37 @@
 import CardHeader from "@/Components/Admin/CardHeader";
 import PageHeader from "@/Components/Admin/PageHeader";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Link } from "@inertiajs/react";
 import { useState } from "react";
 
-export default function DiseasesList({ diseases }) {
+export default function ProductList({ products }) {
 
-    const [diseasesList, setDiseasesList] = useState(diseases)
-
-
-    const handleDelete = async (id) => {
-        if (!confirm('Are you sure you want to delete this brand name?')) return;
-
-        try {
-            await axiosClient.delete(`/admin/diseases/${id}`);
-            alert('Brand name deleted successfully.');
-
-            // Update the list by removing the deleted item
-            setDiseasesList(diseasesList.filter(item => item.id !== id));
-        } catch (error) {
-            console.error('Delete error:', error);
-            alert('Failed to delete brand.');
-        }
-    };
-
-
+    const [productList, setProductList] = useState(products)
     return (
         <AuthenticatedLayout>
-            <PageHeader title="Disease" menu="Product" />
+            <PageHeader title="All Product" menu="Product" />
+
             <div className="row">
                 <div className="col-12">
                     <div className="card">
-                        <CardHeader title="Disease List" btnName="Add Disease" url="/admin/diseases/create" />
+                        <CardHeader title="Product List" btnName="Add Product" url="/admin/products/create" />
 
                         <div className="card-body">
                             <table id="datatable-buttons" className="table table-bordered dt-responsive nowrap w-100">
                                 <thead>
                                     <tr>
                                         <th>Sno</th>
-                                        <th>Disease Name</th>
+                                        <th>SKU</th>
+                                        <th>Product Name</th>
                                         <th>Image</th>
-                                        <th>Category Name </th>
-                                        <th>Description</th>
-                                        <th>Date</th>
+                                        <th>Category </th>
+                                        <th>Type</th>
+                                        <th>Brand </th>
+                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {diseasesList.map((diseases, index) => (
+                                    {productList.map((diseases, index) => (
                                         <tr key={diseases.id}>
                                             <td>{index + 1}</td>
                                             <td>{diseases.name}</td>
@@ -84,6 +68,7 @@ export default function DiseasesList({ diseases }) {
 
                 </div>
             </div>
+
 
         </AuthenticatedLayout>
     )

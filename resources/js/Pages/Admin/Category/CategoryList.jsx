@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import axiosClient from "@/axiosClient";
 import PageHeader from "@/Components/Admin/PageHeader";
 import { toast } from 'react-toastify';
+import CardHeader from "@/Components/Admin/CardHeader";
 
 export default function CategoryList({ categories }) {
     const [categoryList, setCategoryList] = useState(categories);
@@ -50,21 +51,8 @@ export default function CategoryList({ categories }) {
 
             <div className="row">
                 <div className="col-12">
-
                     <div className="card">
-                        <div className="card-header align-items-center d-flex">
-                            <h4 className="card-title mb-0 flex-grow-1">Category List</h4>
-                            <div className="flex-shrink-0">
-                                <div className="d-flex flex-wrap gap-2 mb-0 my-n1">
-                                    <Link href="/admin/categories/create">
-                                        <button type="button" className="btn btn-dark waves-effect waves-light d-flex align-items-center gap-1">
-                                            <Plus size={16} />
-                                            Add Category
-                                        </button>
-                                    </Link>
-                                </div>
-                            </div>
-                        </div>
+                        <CardHeader title={'Category List'} btnName="Add Category" url="/admin/categories/create" />
                     </div>
 
 

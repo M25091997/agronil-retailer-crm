@@ -14,6 +14,7 @@ export default function DiseasesForm({ categories, disease = null }) {
     const [form, setForm] = useState({
         name: '',
         category_id: '',
+        image: null,
         description: '',
         is_active: true,
     });
@@ -24,6 +25,7 @@ export default function DiseasesForm({ categories, disease = null }) {
             setForm({
                 name: disease.name,
                 category_id: disease.category_id,
+                image: null,
                 description: disease.description,
                 is_active: disease.is_active || '',
             })
@@ -36,13 +38,24 @@ export default function DiseasesForm({ categories, disease = null }) {
 
         if (!validate()) return;
 
+        const formData = new FormData();
+        formData.append('name', form.name);
+        formData.append('category_id', form.category_id);
+        formData.append('description', form.description);
+        formData.append('is_active', form.is_active ? 1 : 0);
+
+        if (form.image) {
+            formData.append('image', form.image);
+        }
+
+
         try {
             let response;
 
             if (isEditMode) {
-                response = await axiosClient.put(`/admin/diseases/${disease.id}`, form);
+                response = await axiosClient.put(`/admin/diseases/${disease.id}`, formData);
             } else {
-                response = await axiosClient.post('/admin/diseases', form);
+                response = await axiosClient.post('/admin/diseases', formData);
             }
 
             alert(response.data.message || 'Saved successfully');
@@ -79,7 +92,7 @@ export default function DiseasesForm({ categories, disease = null }) {
                         <CardHeader title="Disease Details" />
 
                         <div className="card-body p-4">
-                            <form onSubmit={handleSubmit}>
+                            <form onSubmit={handleSubmit} encType="multipart/form-data">
                                 <div className="col-lg-12">
                                     <div className="mb-3">
                                         <div class="form-group">
@@ -103,16 +116,37 @@ export default function DiseasesForm({ categories, disease = null }) {
                                 <div className="col-lg-12">
                                     <div className="mb-3">
                                         <div class="form-group">
-                                            <label className="form-label"> Disease Name <span className="text-danger">*</span></label>
+                                            <label htmlFor="name" className="form-label"> Disease Name <span className="text-danger">*</span></label>
                                             <input
                                                 type="text"
                                                 name="name"
+                                                id="name"
                                                 className="form-control"
                                                 value={form.name}
                                                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                                             />
                                             {errors.name && <div className="text-danger">{errors.name}</div>}
                                         </div>
+                                    </div>
+                                </div>
+                                <div className="col-lg-12">
+                                    <div className="mb-3">
+                                        <label className="form-label">Disease image <span className="text-danger">*</span></label>
+                                        <input
+                                            type="file"
+                                            name="image"
+                                            className="form-control"
+                                            onChange={(e) => setForm({ ...form, image: e.target.files[0] })}
+                                        />
+                                        {disease?.image && (
+                                            <img
+                                                src={`/${disease.image}`}
+                                                alt="Current"
+                                                style={{ width: 100, marginTop: 10 }}
+                                            />
+                                        )}
+                                        {errors.image && <div className="text-danger">{errors.image}</div>}
+
                                     </div>
                                 </div>
 

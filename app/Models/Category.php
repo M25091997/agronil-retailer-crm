@@ -40,4 +40,9 @@ class Category extends Model
             $category->slug = $slug;
         });
     }
+
+    public function scopeWhereIsActive($query)
+    {
+        return $query->where('is_active', true);
+    }
 }
