@@ -12,4 +12,9 @@ class HomeBanner extends Model
     {
         return $this->belongsTo(Category::class, 'category_id');
     }
+
+    public function scopeWhereIsActive($query)
+    {
+        return $query->where('is_active', true);
+    }
 }

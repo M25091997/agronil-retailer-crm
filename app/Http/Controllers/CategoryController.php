@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Brand;
 use App\Models\Category;
+use App\Models\Disease;
+use App\Models\SubCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -134,5 +137,18 @@ class CategoryController extends Controller
         $category->delete();
 
         return response()->json(['message' => 'Category deleted successfully.']);
+    }
+
+    public function getDependencies($id)
+    {
+        $subcategories = SubCategory::whereIsActive('category_id', $id)->get();
+        $brands = Brand::whereIsActive('category_id', $id)->get();
+        $diseases = Disease::whereIsActive('category_id', $id)->get();
+
+        return response()->json([
+            'subcategories' => $subcategories,
+            'brands' => $brands,
+            'diseases' => $diseases,
+        ]);
     }
 }

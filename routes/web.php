@@ -37,6 +37,9 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::resource('/home-banners', HomeBannerController::class);
     Route::resource('/products', ProductController::class);
 
+    // api
+    Route::get('/category/dependencies/{id}', [CategoryController::class, 'getDependencies']);
+
 
     // Route::get('/category', function () {
     //     return Inertia::render('Admin/Category/CategoryList');
