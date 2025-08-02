@@ -7,6 +7,7 @@ use App\Http\Controllers\HomeBannerController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubCategoryController;
+use App\Http\Controllers\UnitTypeController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -34,6 +35,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::resource('/sub-categories', SubCategoryController::class);
     Route::resource('/brands', BrandController::class);
     Route::resource('/diseases', DiseaseController::class);
+    Route::resource('/unit-type', UnitTypeController::class);
     Route::resource('/home-banners', HomeBannerController::class);
     Route::resource('/products', ProductController::class);
 

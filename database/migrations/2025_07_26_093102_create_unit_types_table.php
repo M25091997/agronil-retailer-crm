@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('unit')->nullable()->default('');
+            $table->boolean('is_active')->nullable()->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

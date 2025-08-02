@@ -38,8 +38,8 @@ class DiseaseController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name'        => 'required|string|max:255',
-            'category_id' => 'nullable|exists:categories,id',
-            'image'        => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:6048',
+            'category_id' => 'required|exists:categories,id',
+            'image'        => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:6048',
             'description' => 'nullable|string',
             'is_active' => 'nullable|boolean',
         ]);
@@ -98,11 +98,12 @@ class DiseaseController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name'        => 'required|string|max:255',
-            'category_id' => 'nullable|exists:categories,id',
-            'image'        => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:6048',
+            'category_id' => 'required|exists:categories,id',
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:6048',
             'description' => 'nullable|string',
-            'is_active' => 'nullable|boolean',
+            'is_active'   => 'nullable|boolean',
         ]);
+
 
         if ($validator->fails()) {
             return response()->json([

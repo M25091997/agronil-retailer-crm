@@ -31,6 +31,8 @@ class ProductRequest extends FormRequest
             'sku' => 'nullable|string|max:100',
             'unit_type' => 'nullable|string|max:100',
             'base_unit' => 'nullable|string|max:100',
+            'unit_type_id' => 'nullable',
+            'base_unit_id' => 'nullable',
             'hsn_code' => 'nullable|string|max:20',
             'specification' => 'nullable|string',
             'description' => 'nullable|string',
@@ -39,7 +41,8 @@ class ProductRequest extends FormRequest
 
 
 
-            'product_variant_price' => 'required|array',
+            'product_variant_price' => 'required',
+            'product_variant_price.*' => 'required|array',
             // 'product_variant_price.*.unit_type_id' => 'nullable|exists:unit_types,id',
             // 'product_variant_price.*.unit_type' => 'required|string',
             // 'product_variant_price.*.base_unit_id' => 'required|exists:base_units,id',

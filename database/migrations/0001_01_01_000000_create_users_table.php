@@ -16,9 +16,9 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique()->default('');
             $table->string('phone')->unique()->default('');
-            $table->string('otp', 6)->default('');
+            $table->string('otp', 6)->nullable();
             $table->string('pincode')->default('');
-            $table->timestamp('otp_expires_at')->nullable();
+            $table->timestamp('otp_expire_at')->nullable();
             $table->boolean('verified')->default(false);
             $table->timestamp('phone_verified_at')->nullable();
             $table->timestamp('email_verified_at')->nullable();

@@ -141,9 +141,9 @@ class CategoryController extends Controller
 
     public function getDependencies($id)
     {
-        $subcategories = SubCategory::whereIsActive('category_id', $id)->get();
-        $brands = Brand::whereIsActive('category_id', $id)->get();
-        $diseases = Disease::whereIsActive('category_id', $id)->get();
+        $subcategories = SubCategory::whereIsActive()->where('category_id', $id)->get();
+        $brands = Brand::whereIsActive()->where('category_id', $id)->get();
+        $diseases = Disease::whereIsActive()->where('category_id', $id)->get();
 
         return response()->json([
             'subcategories' => $subcategories,

@@ -34,6 +34,7 @@ return new class extends Migration
             $table->unsignedBigInteger('unit_type_id')->nullable();
             $table->string('unit_type')->nullable()->default('');
             $table->string('base_unit')->nullable()->default('');
+            $table->string('hsn_code')->nullable()->default('');
             $table->boolean('is_active')->default(false);
             $table->boolean('top_selling')->default(false);
             $table->boolean('trending')->default(false);

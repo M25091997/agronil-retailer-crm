@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger("unit_type_id");
             $table->string('name');
             $table->string('base_unit')->nullable()->default('');
+            $table->boolean('is_active')->nullable()->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

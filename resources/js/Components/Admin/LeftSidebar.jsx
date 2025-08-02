@@ -73,6 +73,11 @@ export default function LeftSidebar() {
                                     </Link>
                                 </li>
                                 <li>
+                                    <Link href="/admin/unit-type">
+                                        Unit Type
+                                    </Link>
+                                </li>
+                                <li>
                                     <Link href="/admin/home-banners">
                                         Home Banners
                                     </Link>

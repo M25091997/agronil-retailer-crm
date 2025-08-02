@@ -1,7 +1,9 @@
 import CardHeader from "@/Components/Admin/CardHeader";
 import PageHeader from "@/Components/Admin/PageHeader";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { Link } from "@inertiajs/react";
 import { useState } from "react";
+import { Badge } from "react-bootstrap"
 
 export default function ProductList({ products }) {
 
@@ -26,35 +28,42 @@ export default function ProductList({ products }) {
                                         <th>Category </th>
                                         <th>Type</th>
                                         <th>Brand </th>
+                                        <th>Diseases </th>
+                                        <th>HSN Code </th>
                                         <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {productList.map((diseases, index) => (
-                                        <tr key={diseases.id}>
+                                    {productList.map((product, index) => (
+                                        <tr key={product.id}>
                                             <td>{index + 1}</td>
-                                            <td>{diseases.name}</td>
+                                            <td>{product.sku}</td>
+                                            <td>{product.name}</td>
                                             <td>
-                                                {diseases.image && (
+                                                {product.images[0] && (
                                                     <img
-                                                        src={`/${diseases.image}`}
-                                                        alt={diseases.name}
+                                                        src={`upload/${product.images[0].image_path}`}
+                                                        alt={product.name}
                                                         width="100"
                                                         height="100"
                                                     />
                                                 )}
                                             </td>
-                                            <td>{diseases.category?.name}</td>
-                                            <td>{diseases.description}</td>
-                                            <td>{new Date(diseases.created_at).toLocaleDateString()}</td>
+                                            <td>{product.category}</td>
+                                            <td>{product.base_unit}</td>
+                                            <td>{product.brand}</td>
+                                            <td>{product.disease}</td>
+                                            <td>{product.hsn_code}</td>
+                                            <td> <Badge bg={product.is_active ? 'success' : 'secondary'}>{product.is_active ? 'Active' : 'Disabled'}</Badge></td>
+                                            {/* <td>{new Date(product.created_at).toLocaleDateString()}</td> */}
                                             <td>
-                                                <Link href={`/admin/diseases/${diseases.id}/edit`}>
+                                                <Link href={`/admin/products/${product.id}/edit`}>
                                                     <button className="btn btn-sm btn-primary me-1">Edit</button>
                                                 </Link>
                                                 <button
                                                     className="btn btn-sm btn-danger"
-                                                    onClick={() => handleDelete(diseases.id)}
+                                                    onClick={() => handleDelete(product.id)}
                                                 >
                                                     Delete
                                                 </button>

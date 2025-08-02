@@ -6,9 +6,10 @@ import { Link } from "@inertiajs/react";
 // import { ArrowRight, ArrowRightSquareIcon, Plus } from "lucide-react";
 import { useState } from "react";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
+import { toast } from "react-toastify";
 // import Nav from 'react-bootstrap/Nav';
 
-export default function ProductForm({ product = null, categories }) {
+export default function ProductForm({ product = null, categories, unitTypes }) {
     const isEditMode = !!product;
     const [errors, setErrors] = useState({});
 
@@ -80,12 +81,12 @@ export default function ProductForm({ product = null, categories }) {
             }
         }
         // Append image files if multiple
-        if (form.images && form.images.length > 0) {
-            for (let i = 0; i < form.images.length; i++) {
-                formData.append('images[]', form.images[i]);
-            }
-        }
-        formData.append('product_variant_price', JSON.stringify(form.product_variant_price));
+        // if (form.images && form.images.length > 0) {
+        //     for (let i = 0; i < form.images.length; i++) {
+        //         formData.append('images[]', form.images[i]);
+        //     }
+        // }
+        // formData.append('product_variant_price', JSON.stringify(form.product_variant_price));
 
         console.log(form.product_variant_price);
 
@@ -235,9 +236,9 @@ export default function ProductForm({ product = null, categories }) {
                                         <Form.Label>Select Unit Type</Form.Label>
                                         <Form.Select aria-label="Default select example" name="unit_type" value={form.unit_type_id || ''} onChange={(e) => setForm({ ...form, unit_type: e.target.value })}>
                                             <option value="">Choose...</option>
-                                            {categories.map(item => (
-                                                <option key={item.id} value={item.id}>
-                                                    {item.name}
+                                            {unitTypes.map(unitType => (
+                                                <option key={unitType.id} value={unitType.id}>
+                                                    {unitType.name}
                                                 </option>
                                             ))}
                                         </Form.Select>

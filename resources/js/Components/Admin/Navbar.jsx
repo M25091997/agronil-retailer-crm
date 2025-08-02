@@ -5,10 +5,16 @@ import { router } from '@inertiajs/react';
 
 export default function Navbar() {
     const [open, setOpen] = useState(false);
+    const [verticalMenu, setVerticalMenu] = useState(false);
 
     const logoutHandle = () => {
         router.post('/logout');
     };
+
+    const handleVerticaleMenu = () => {
+        setVerticalMenu(!verticalMenu);
+
+    }
     return (
         <div className="navbar-header">
             <div className="d-flex">
@@ -55,7 +61,7 @@ export default function Navbar() {
                     type="button"
                     className="btn btn-sm px-3 font-size-16 header-item"
                     id="vertical-menu-btn"
-                >
+                    onClick={handleVerticaleMenu}>
                     <i className="fa fa-fw fa-bars"></i>
                 </button>
 

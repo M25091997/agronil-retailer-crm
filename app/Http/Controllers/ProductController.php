@@ -6,11 +6,12 @@ use App\Http\Requests\ProductRequest;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Disease;
-use App\Models\product;
+use App\Models\Product;
 use App\Models\ProductBulkPrice;
 use App\Models\ProductImage;
 use App\Models\ProductVariant;
 use App\Models\SubCategory;
+use App\Models\UnitType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
@@ -23,7 +24,7 @@ class ProductController extends Controller
     public function index()
     {
         return Inertia::render('Admin/Product/ProductList', [
-            'products' => [],
+            'products' => Product::with('images')->latest()->get(),
 
         ]);
     }
@@ -35,6 +36,7 @@ class ProductController extends Controller
     {
         return Inertia::render('Admin/Product/ProductForm', [
             'categories' => Category::whereIsActive()->get(),
+            'unitTypes' => UnitType::whereIsActive()->get(),
 
         ]);
     }
@@ -52,6 +54,8 @@ class ProductController extends Controller
         //         'status' => false,
         //     ], 422);
         // }
+
+        // return json_decode($validated['product_variant_price']);
 
         if ($validated['brand_id']) {
             $brand = Brand::find($validated['brand_id'])->value('name');
@@ -79,7 +83,7 @@ class ProductController extends Controller
             'description' => $validated['description'],
             'specification' => $validated['specification'],
             'other_information' => $validated['other_information'],
-            'is_active' => $validated['is_active'],
+            'is_active' => $request->has("is_active") ? true : false,
         ]);
 
         // 2. Upload images if any
@@ -94,36 +98,38 @@ class ProductController extends Controller
         }
 
         // 3. Store product variants
-        foreach ($validated['product_variant_price'] as $variant) {
+        foreach (json_decode($validated['product_variant_price']) as $variant) {
+            // return $variant;
             $variantModel = ProductVariant::create([
                 'product_id' => $product->id,
-                'unit_type_id' => $variant['unit_type_id'],
-                'unit_type' => $variant['unit_type'],
-                'base_unit_id' => $variant['base_unit_id'],
-                'base_unit' => $variant['base_unit'],
-                'quantity' => $variant['quantity'],
-                'price' => $variant['price'],
-                'original_price' => $variant['original_price'],
-                'unit_rate' => $variant['unit_rate'],
+                'unit_type_id' => $variant->unit_type_id ?? null,
+                'unit_type' => $unitType ?? "demo",
+                'base_unit_id' => $variant->base_unit_id,
+                'base_unit' => $baseUnit ??  "demo",
+                'quantity' => $variant->quantity,
+                'price' => $variant->price,
+                'original_price' => $variant->original_price,
+                'unit_rate' => $variant->unit_rate,
                 'discount' => $discount ?? 0,
-                'stock' => $variant['stock'] ?? 0,
-                'is_bulk' => $variant['is_bulk'],
+                'stock' =>  0,
+                'is_bulk' => $variant->is_bulk,
                 'is_active' => true,
             ]);
 
-            // 4. Store bulk prices if present
-            if (!empty($variant['bulk'])) {
-                foreach ($variant['bulk'] as $bulk) {
+            // 4. Store bulk prices if present         
+            if (!empty($variant->bulk) && $variant->is_bulk) {
+                foreach ($variant->bulk as $bulk) {
+                    // return  $bulk;
                     ProductBulkPrice::create([
                         'product_variant_id' => $variantModel->id,
                         'product_id' => $product->id,
-                        'pieces_per_box' => $bulk['pieces_per_box'],
-                        'bulk_qty_range' => $bulk['bulk_qty_range'],
-                        'bulk_price' => $bulk['bulk_price'],
-                        'total_box_price' => $bulk['total_box_price'],
-                        'margin' => $bulk['margin'],
-                        'bulk_stock' => $bulk['bulk_stock'],
-                        'best_value' => $bulk['best_value'] ?? false,
+                        'pieces_per_box' => $bulk->pieces_per_box,
+                        'bulk_qty_range' => $bulk->bulk_qty_range,
+                        'bulk_price' => $bulk->bulk_price,
+                        'total_box_price' => $bulk->total_box_price,
+                        'margin' => $bulk->margin,
+                        'bulk_stock' => 0,
+                        'best_value' => $bulk->best_value ?? false,
                         'is_active' => true,
                     ]);
                 }

@@ -33,8 +33,11 @@ export default function DiseasesForm({ categories, disease = null }) {
 
     }, [isEditMode, disease]);
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        console.log(form);
 
         if (!validate()) return;
 
@@ -53,7 +56,8 @@ export default function DiseasesForm({ categories, disease = null }) {
             let response;
 
             if (isEditMode) {
-                response = await axiosClient.put(`/admin/diseases/${disease.id}`, formData);
+                formData.append('_method', 'PUT');
+                response = await axiosClient.post(`/admin/diseases/${disease.id}`, formData);
             } else {
                 response = await axiosClient.post('/admin/diseases', formData);
             }
