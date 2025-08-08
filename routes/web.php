@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\BaseUnitController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DiseaseController;
 use App\Http\Controllers\HomeBannerController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RetailerController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\UnitTypeController;
 use Illuminate\Foundation\Application;
@@ -21,9 +23,21 @@ use Inertia\Inertia;
 //     ]);
 // });
 
-Route::get('/', function () {
+Route::get('/login', function () {
     return Inertia::location('/login');
 });
+
+
+Route::get('/', function () {
+    return view('website.welcome');
+});
+Route::get('/aboutus', function () {
+    return view('website.aboutus');
+});
+Route::get('/retailer', function () {
+    return view('website.retailer');
+});
+
 
 Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/', function () {
@@ -36,11 +50,19 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::resource('/brands', BrandController::class);
     Route::resource('/diseases', DiseaseController::class);
     Route::resource('/unit-type', UnitTypeController::class);
+    Route::resource('/base-unit', BaseUnitController::class);
     Route::resource('/home-banners', HomeBannerController::class);
     Route::resource('/products', ProductController::class);
 
     // api
     Route::get('/category/dependencies/{id}', [CategoryController::class, 'getDependencies']);
+
+    Route::prefix('/retailer')->group(function () {
+        Route::get('/pending', [RetailerController::class, 'pendingRetailer']);
+        Route::get('/approved', [RetailerController::class, 'approvedRetailer']);
+        Route::get('/status-update/{retailer}', [RetailerController::class, 'statusUpdate']);
+        Route::delete('/{retailer}', [RetailerController::class, 'destroy']);
+    });
 
 
     // Route::get('/category', function () {
@@ -51,9 +73,9 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     // });
 });
 
-Route::get('/', function () {
-    return Inertia::location('/login');
-});
+// Route::get('/', function () {
+//     return Inertia::location('/login');
+// });
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

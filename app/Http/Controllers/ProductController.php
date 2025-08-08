@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductRequest;
+use App\Models\BaseUnit;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Disease;
@@ -37,6 +38,7 @@ class ProductController extends Controller
         return Inertia::render('Admin/Product/ProductForm', [
             'categories' => Category::whereIsActive()->get(),
             'unitTypes' => UnitType::whereIsActive()->get(),
+            'baseUnits' => BaseUnit::whereIsActive()->get(),
 
         ]);
     }
@@ -89,7 +91,9 @@ class ProductController extends Controller
         // 2. Upload images if any
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
-                $path = $image->store('products'); // store in storage/app/products
+                // Store image in 'storage/app/public/products'
+                $path = $image->store('uploads/products', 'public');
+
                 ProductImage::create([
                     'product_id' => $product->id,
                     'image_path' => $path,
@@ -150,9 +154,16 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(product $product)
+    public function edit(Product $product)
     {
-        //
+        $product = Product::with('images', 'variants', 'variants.bulk')->findOrFail($product->id);
+
+        return Inertia::render('Admin/Product/ProductForm', [
+            'categories' => Category::whereIsActive()->get(),
+            'unitTypes' => UnitType::whereIsActive()->get(),
+            'baseUnits' => BaseUnit::whereIsActive()->get(),
+            'product' => $product,
+        ]);
     }
 
     /**

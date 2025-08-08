@@ -1,7 +1,8 @@
 import { Plus, Trash2 } from 'lucide-react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 
-function ProductVariantsForm({ variants, onChange }) {
+function ProductVariantsForm({ baseUnits, variants, onChange }) {
+    // console.log(baseUnits);
     const handleVariantChange = (index, key, value) => {
         const updated = [...variants];
         updated[index][key] = value;
@@ -78,16 +79,14 @@ function ProductVariantsForm({ variants, onChange }) {
                                     }
                                 >
                                     <option value="">Choose...</option>
-                                    <option value="1">Kg</option>
-                                    <option value="2">Pcs</option>
-                                    <option value="3">Doz</option>
-                                    <option value="4">Gm</option>
-                                    <option value="5">NOS</option>
-                                    <option value="6">PIC</option>
-                                    <option value="7">MUNNA PCS</option>
-                                    <option value="8">Ton</option>
-                                    <option value="9">Ltr</option>
-                                    <option value="10">Ml</option>
+                                    {baseUnits.map((baseUnit) => {
+                                        return (
+                                            <option key={baseUnit.id} value={baseUnit.id}>  {baseUnit.name}
+                                                ({baseUnit.base_unit})
+                                            </option>
+                                        );
+                                    })}
+
                                 </Form.Select>
                             </Form.Group>
                         </Col>

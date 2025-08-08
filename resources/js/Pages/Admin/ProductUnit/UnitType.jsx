@@ -129,12 +129,12 @@ export default function UnitType({ unitTypes, }) {
 
                                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                                     <Form.Label>Name</Form.Label>
-                                    <Form.Control type="text" name="name" value={form.name || ''} placeholder="eg: Kilogram" onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                                    <Form.Control type="text" name="name" value={form.name || ''} placeholder="Ex: Kilogram" onChange={(e) => setForm({ ...form, name: e.target.value })} />
                                     {errors.name && <div className="text-danger">{errors.name}</div>}
                                 </Form.Group>
                                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                                     <Form.Label>Unit</Form.Label>
-                                    <Form.Control type="text" name="unit" value={form.unit || ''} placeholder="eg: Kg" onChange={(e) => setForm({ ...form, unit: e.target.value })} />
+                                    <Form.Control type="text" name="unit" value={form.unit || ''} placeholder="Ex: Kg" onChange={(e) => setForm({ ...form, unit: e.target.value })} />
                                     {errors.unit && <div className="text-danger">{errors.unit}</div>}
                                 </Form.Group>
 

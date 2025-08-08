@@ -26,7 +26,7 @@ export default function ProductList({ products }) {
                                         <th>Product Name</th>
                                         <th>Image</th>
                                         <th>Category </th>
-                                        <th>Type</th>
+                                        <th>Unit</th>
                                         <th>Brand </th>
                                         <th>Diseases </th>
                                         <th>HSN Code </th>

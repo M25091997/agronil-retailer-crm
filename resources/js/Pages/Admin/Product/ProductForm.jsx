@@ -2,14 +2,12 @@ import axiosClient from "@/axiosClient";
 import PageHeader from "@/Components/Admin/PageHeader";
 import ProductVariantsForm from "@/Components/Admin/ProductVariantsForm";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import React, { useEffect, useState } from "react";
 import { Link } from "@inertiajs/react";
-// import { ArrowRight, ArrowRightSquareIcon, Plus } from "lucide-react";
-import { useState } from "react";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import { toast } from "react-toastify";
-// import Nav from 'react-bootstrap/Nav';
 
-export default function ProductForm({ product = null, categories, unitTypes }) {
+export default function ProductForm({ product = null, categories, unitTypes, baseUnits }) {
     const isEditMode = !!product;
     const [errors, setErrors] = useState({});
 
@@ -26,7 +24,7 @@ export default function ProductForm({ product = null, categories, unitTypes }) {
         sku: '',
         unit_type_id: '',
         base_unit_id: '',
-        images: null,
+        images: [],
         hsn_code: '',
         sort_description: '',
         description: '',
@@ -35,6 +33,31 @@ export default function ProductForm({ product = null, categories, unitTypes }) {
         is_active: false,
         product_variant_price: [],
     });
+
+    useEffect(() => {
+        if (isEditMode && product) {
+            setForm({
+                name: product.name,
+                category_id: product.category_id,
+                sub_category_id: product.sub_category_id,
+                brand_id: product.brand_id,
+                disease_id: product.disease_id,
+                sku: product.sku,
+                unit_type_id: product.unit_type_id,
+                base_unit_id: product.base_unit_id,
+                images: product.images,
+                hsn_code: product.hsn_code,
+                sort_description: product.sort_description,
+                description: product.description,
+                specification: product.specification,
+                other_information: product.other_information,
+                is_active: product.is_active ?? false,
+                product_variant_price: product.variants,
+            });
+        }
+    }, [product, isEditMode]);
+
+
 
     const handleVariantChange = (variants) => {
         setForm({ ...form, product_variant_price: variants });
@@ -65,7 +88,7 @@ export default function ProductForm({ product = null, categories, unitTypes }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!validate()) return
+        // if (!validate()) return
 
         const formData = new FormData();
 
@@ -158,8 +181,8 @@ export default function ProductForm({ product = null, categories, unitTypes }) {
                             <Row>
                                 <Col md={4}>
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                        <Form.Label>Product Name</Form.Label> <span class="text-danger">*</span>
-                                        <Form.Control type="text" name="name" placeholder="" autocomplete="off" onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                                        <Form.Label>Product Name</Form.Label> <span className="text-danger">*</span>
+                                        <Form.Control type="text" name="name" value={form.name || ''} placeholder="" autoComplete="off" onChange={(e) => setForm({ ...form, name: e.target.value })} />
                                         {errors.name && <div className="text-danger">{errors.name}</div>}
                                     </Form.Group>
                                 </Col>
@@ -173,15 +196,15 @@ export default function ProductForm({ product = null, categories, unitTypes }) {
                                 </Col>
                                 <Col md={4}>
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                        <Form.Label>Product SKU Id</Form.Label> <span class="text-danger">*</span>
-                                        <Form.Control type="text" name="sku" value={form.sku || ''} placeholder="" autocomplete="off" onChange={(e) => setForm({ ...form, sku: e.target.value })} />
+                                        <Form.Label>Product SKU Id</Form.Label> <span className="text-danger">*</span>
+                                        <Form.Control type="text" name="sku" value={form.sku || ''} placeholder="" autoComplete="off" onChange={(e) => setForm({ ...form, sku: e.target.value })} />
                                         {errors.sku && <div className="text-danger">{errors.sku}</div>}
                                     </Form.Group>
                                 </Col>
 
                                 <Col md={4}>
                                     <Form.Group className="mb-3" controlId="category_id">
-                                        <Form.Label>Select Category</Form.Label> <span class="text-danger">*</span>
+                                        <Form.Label>Select Category</Form.Label> <span className="text-danger">*</span>
                                         {/* <Form.Select aria-label="Default select example" name="category_id" value={form.category_id || ''} onChange={(e) => setForm({ ...form, category_id: e.target.value })}> */}
                                         <Form.Select aria-label="Default select example" name="category_id" value={form.category_id || ''} onChange={handleCategoryChange}>
                                             <option value="">Choose...</option>
@@ -197,7 +220,7 @@ export default function ProductForm({ product = null, categories, unitTypes }) {
 
                                 <Col md={4}>
                                     <Form.Group className="mb-3" controlId="category_id">
-                                        <Form.Label>Select Sub Category</Form.Label> <span class="text-danger">*</span>
+                                        <Form.Label>Select Sub Category</Form.Label> <span className="text-danger">*</span>
                                         <Form.Select aria-label="Default select example" name="category_id" value={form.sub_category_id || ''} onChange={(e) => setForm({ ...form, sub_category_id: e.target.value })}>
                                             <option value="">Choose...</option>
                                             {subCategories.map(sub => (
@@ -234,7 +257,7 @@ export default function ProductForm({ product = null, categories, unitTypes }) {
                                 <Col md={4}>
                                     <Form.Group className="mb-3" controlId="category_id">
                                         <Form.Label>Select Unit Type</Form.Label>
-                                        <Form.Select aria-label="Default select example" name="unit_type" value={form.unit_type_id || ''} onChange={(e) => setForm({ ...form, unit_type: e.target.value })}>
+                                        <Form.Select aria-label="Default select example" name="unit_type_id" value={form.unit_type_id || ''} onChange={(e) => setForm({ ...form, unit_type_id: e.target.value })}>
                                             <option value="">Choose...</option>
                                             {unitTypes.map(unitType => (
                                                 <option key={unitType.id} value={unitType.id}>
@@ -242,41 +265,53 @@ export default function ProductForm({ product = null, categories, unitTypes }) {
                                                 </option>
                                             ))}
                                         </Form.Select>
-                                        {errors.unit_type && <div className="text-danger">{errors.unit_type}</div>}
+                                        {errors.unit_type_id && <div className="text-danger">{errors.unit_type_id}</div>}
                                     </Form.Group>
                                 </Col>
                                 <Col md={4}>
                                     <Form.Group className="mb-3" controlId="category_id">
                                         <Form.Label>Select Base Unit</Form.Label>
-                                        <Form.Select aria-label="Default select example" name="base_unit" value={form.base_unit_id || ''} onChange={(e) => setForm({ ...form, base_unit: e.target.value })}>
+                                        <Form.Select aria-label="Default select example" name="base_unit_id" value={form.base_unit_id || ''} onChange={(e) => setForm({ ...form, base_unit_id: e.target.value })}>
                                             <option value="">Choose...</option>
-                                            {categories.map(item => (
-                                                <option key={item.id} value={item.id}>
-                                                    {item.name}
+                                            {baseUnits.map(baseUnit => (
+                                                <option key={baseUnit.id} value={baseUnit.id}>
+                                                    {baseUnit.name} ({baseUnit.base_unit})
                                                 </option>
                                             ))}
                                         </Form.Select>
-                                        {errors.base_unit && <div className="text-danger">{errors.base_unit}</div>}
+                                        {errors.base_unit_id && <div className="text-danger">{errors.base_unit_id}</div>}
                                     </Form.Group>
                                 </Col>
                                 <Col md={3}>
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                        <Form.Label>Product Image (Can select more then one)</Form.Label> <span class="text-danger">*</span>
-                                        <Form.Control type="file" name="images[]" placeholder="" autocomplete="off" multiple onChange={(e) => setForm({ ...form, images: e.target.files })} />
+                                        <Form.Label>Product Image (Can select more then one)</Form.Label> <span className="text-danger">*</span>
+                                        <Form.Control type="file" name="images[]" placeholder="" autoComplete="off" multiple onChange={(e) => setForm({ ...form, images: e.target.files })} />
                                     </Form.Group>
+                                    {/* Show existing images (from product prop) */}
+                                    <div style={{ display: 'flex' }}>
+                                        {form.images && Array.isArray(form.images) && form.images.map((img, idx) => (
+                                            <div key={idx} className="mb-2">
+                                                <img
+                                                    src={`/storage/${img.image_path}`}
+                                                    alt="Product"
+                                                    style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '5px' }}
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
                                     {errors.images && <div className="text-danger">{errors.images}</div>}
                                 </Col>
                                 <Col md={3}>
                                     <Form.Group className="mb-3" controlId="exampleForm.hsn_code">
                                         <Form.Label>HSN Code (optional)</Form.Label>
-                                        <Form.Control type="text" name="hsn_code" placeholder="" autocomplete="off" value={form.hsn_code || ''} onChange={(e) => setForm({ ...form, hsn_code: e.target.value })} />
+                                        <Form.Control type="text" name="hsn_code" placeholder="" autoComplete="off" value={form.hsn_code || ''} onChange={(e) => setForm({ ...form, hsn_code: e.target.value })} />
                                         {errors.hsn_code && <div className="text-danger">{errors.hsn_code}</div>}
                                     </Form.Group>
                                 </Col>
                             </Row>
                             <hr></hr>
                             <Row>
-                                <h6 className="text-info mb-2 mt-3">Product Details</h6>
+                                <h6 className="text-info mb-2 mt-3"> Product Details</h6>
                                 <Col md={6}>
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
                                         <Form.Label>Product Specification</Form.Label>
@@ -329,66 +364,66 @@ export default function ProductForm({ product = null, categories, unitTypes }) {
 
                             <Col md={3}>
                                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                    <Form.Label>Quantity or Weight</Form.Label> <span class="text-danger">*</span>
-                                    <Form.Control type="text" name="name" placeholder="e.g., 50 ml" autocomplete="off"  />
+                                    <Form.Label>Quantity or Weight</Form.Label> <span className="text-danger">*</span>
+                                    <Form.Control type="text" name="name" placeholder="e.g., 50 ml" autoComplete="off"  />
                                 </Form.Group>
                             </Col>
 
                             <Col md={3}>
                                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                    <Form.Label>Unit Value</Form.Label> <span class="text-danger">*</span>
-                                    <Form.Control type="text" name="name" placeholder="" autocomplete="off"  />
+                                    <Form.Label>Unit Value</Form.Label> <span className="text-danger">*</span>
+                                    <Form.Control type="text" name="name" placeholder="" autoComplete="off"  />
                                 </Form.Group>
                             </Col>
 
 
                             <Col md={3}>
                                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                    <Form.Label>MRP (₹)</Form.Label> <span class="text-danger">*</span>
-                                    <Form.Control type="text" name="name" placeholder="" autocomplete="off"  />
+                                    <Form.Label>MRP (₹)</Form.Label> <span className="text-danger">*</span>
+                                    <Form.Control type="text" name="name" placeholder="" autoComplete="off"  />
                                 </Form.Group>
                             </Col>
 
                             <Col md={3}>
                                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                    <Form.Label>Selling Price (₹)</Form.Label> <span class="text-danger">*</span>
-                                    <Form.Control type="text" name="name" placeholder="" autocomplete="off"  />
+                                    <Form.Label>Selling Price (₹)</Form.Label> <span className="text-danger">*</span>
+                                    <Form.Control type="text" name="name" placeholder="" autoComplete="off"  />
                                 </Form.Group>
                             </Col>
                             <Col md={3}>
                                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                    <Form.Label>Price/Unit (₹/L or ₹/KG)</Form.Label> <span class="text-danger">*</span>
-                                    <Form.Control type="text" name="name" placeholder="" autocomplete="off" />
+                                    <Form.Label>Price/Unit (₹/L or ₹/KG)</Form.Label> <span className="text-danger">*</span>
+                                    <Form.Control type="text" name="name" placeholder="" autoComplete="off" />
                                 </Form.Group>
                             </Col>
                             <Col md={3}>
                                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                    <Form.Label>Box Qty</Form.Label> <span class="text-danger">*</span>
-                                    <Form.Control type="text" name="name" placeholder="" autocomplete="off" />
+                                    <Form.Label>Box Qty</Form.Label> <span className="text-danger">*</span>
+                                    <Form.Control type="text" name="name" placeholder="" autoComplete="off" />
                                 </Form.Group>
                             </Col>
                             <Col md={3}>
                                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                    <Form.Label>Total Box Price</Form.Label> <span class="text-danger">*</span>
-                                    <Form.Control type="text" name="name" placeholder="" autocomplete="off" />
+                                    <Form.Label>Total Box Price</Form.Label> <span className="text-danger">*</span>
+                                    <Form.Control type="text" name="name" placeholder="" autoComplete="off" />
                                 </Form.Group>
                             </Col>
                             <Col md={3}>
                                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                    <Form.Label>Bulk Price (Optional)</Form.Label> <span class="text-danger">*</span>
-                                    <Form.Control type="text" name="name" placeholder="" autocomplete="off" />
+                                    <Form.Label>Bulk Price (Optional)</Form.Label> <span className="text-danger">*</span>
+                                    <Form.Control type="text" name="name" placeholder="" autoComplete="off" />
                                 </Form.Group>
                             </Col>
                             <Col md={3}>
                                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                    <Form.Label>Bulk Range (Optional)</Form.Label> <span class="text-danger">*</span>
-                                    <Form.Control type="text" name="name" placeholder="" autocomplete="off" />
+                                    <Form.Label>Bulk Range (Optional)</Form.Label> <span className="text-danger">*</span>
+                                    <Form.Control type="text" name="name" placeholder="" autoComplete="off" />
                                 </Form.Group>
                             </Col>
                             <Col md={3}>
                                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                    <Form.Label>Best Value</Form.Label> <span class="text-danger">*</span>
-                                    <Form.Control type="checkbox" name="best_value" placeholder="" autocomplete="off" />
+                                    <Form.Label>Best Value</Form.Label> <span className="text-danger">*</span>
+                                    <Form.Control type="checkbox" name="best_value" placeholder="" autoComplete="off" />
                                 </Form.Group>
                             </Col>
 
@@ -405,6 +440,7 @@ export default function ProductForm({ product = null, categories, unitTypes }) {
 
                             <ProductVariantsForm
                                 variants={form.product_variant_price}
+                                baseUnits={baseUnits}
                                 onChange={(variants) =>
                                     setForm({ ...form, product_variant_price: variants })
                                 }
@@ -438,29 +474,29 @@ export default function ProductForm({ product = null, categories, unitTypes }) {
 
                             <Col md={2}>
                                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                    <Form.Label>Weight or Pcs </Form.Label> <span class="text-danger">*</span>
-                                    <Form.Control type="text" name="name" placeholder="" autocomplete="off"  />
+                                    <Form.Label>Weight or Pcs </Form.Label> <span className="text-danger">*</span>
+                                    <Form.Control type="text" name="name" placeholder="" autoComplete="off"  />
                                 </Form.Group>
                             </Col>
                             <Col md={2}>
                                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                    <Form.Label>Price per Unit (₹) </Form.Label> <span class="text-danger">*</span>
-                                    <Form.Control type="text" name="name" placeholder="" autocomplete="off"  />
+                                    <Form.Label>Price per Unit (₹) </Form.Label> <span className="text-danger">*</span>
+                                    <Form.Control type="text" name="name" placeholder="" autoComplete="off"  />
                                 </Form.Group>
                             </Col>
 
 
                             <Col md={2}>
                                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                    <Form.Label>Original Price (₹)</Form.Label> <span class="text-danger">*</span>
-                                    <Form.Control type="text" name="name" placeholder="" autocomplete="off"  />
+                                    <Form.Label>Original Price (₹)</Form.Label> <span className="text-danger">*</span>
+                                    <Form.Control type="text" name="name" placeholder="" autoComplete="off"  />
                                 </Form.Group>
                             </Col>
 
                             <Col md={2}>
                                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                    <Form.Label>KG Rate (₹/L or ₹/KG)</Form.Label> <span class="text-danger">*</span>
-                                    <Form.Control type="text" name="name" placeholder="Auto-calculated	Price/weight × 1000" autocomplete="off"  />
+                                    <Form.Label>KG Rate (₹/L or ₹/KG)</Form.Label> <span className="text-danger">*</span>
+                                    <Form.Control type="text" name="name" placeholder="Auto-calculated	Price/weight × 1000" autoComplete="off"  />
                                 </Form.Group>
                             </Col>
 
@@ -484,35 +520,35 @@ export default function ProductForm({ product = null, categories, unitTypes }) {
 
                                     <Col md={2}>
                                         <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                            <Form.Label>No. of Pieces/Box</Form.Label> <span class="text-danger">*</span>
-                                            <Form.Control type="text" name="name" placeholder="e.g. 30" autocomplete="off"  />
+                                            <Form.Label>No. of Pieces/Box</Form.Label> <span className="text-danger">*</span>
+                                            <Form.Control type="text" name="name" placeholder="e.g. 30" autoComplete="off"  />
                                         </Form.Group>
                                     </Col>
                                     <Col md={2}>
                                         <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                            <Form.Label>Bulk Qty Range</Form.Label> <span class="text-danger">*</span>
-                                            <Form.Control type="text" name="name" placeholder="" autocomplete="off"  />
-                                        </Form.Group>
-                                    </Col>
-
-                                    <Col md={2}>
-                                        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                            <Form.Label>Bulk Price (Optional)</Form.Label> <span class="text-danger">*</span>
-                                            <Form.Control type="text" name="name" placeholder="" autocomplete="off"  />
+                                            <Form.Label>Bulk Qty Range</Form.Label> <span className="text-danger">*</span>
+                                            <Form.Control type="text" name="name" placeholder="" autoComplete="off"  />
                                         </Form.Group>
                                     </Col>
 
+                                    <Col md={2}>
+                                        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                                            <Form.Label>Bulk Price (Optional)</Form.Label> <span className="text-danger">*</span>
+                                            <Form.Control type="text" name="name" placeholder="" autoComplete="off"  />
+                                        </Form.Group>
+                                    </Col>
+
 
                                     <Col md={2}>
                                         <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                            <Form.Label>Total Box Price</Form.Label> <span class="text-danger">*</span>
-                                            <Form.Control type="text" name="name" placeholder="Auto unit price × box count" autocomplete="off"  />
+                                            <Form.Label>Total Box Price</Form.Label> <span className="text-danger">*</span>
+                                            <Form.Control type="text" name="name" placeholder="Auto unit price × box count" autoComplete="off"  />
                                         </Form.Group>
                                     </Col>
                                     <Col md={2}>
                                         <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                            <Form.Label>Margin (%)</Form.Label> <span class="text-danger">*</span>
-                                            <Form.Control type="text" name="name" placeholder="Auto/Manual" autocomplete="off"  />
+                                            <Form.Label>Margin (%)</Form.Label> <span className="text-danger">*</span>
+                                            <Form.Control type="text" name="name" placeholder="Auto/Manual" autoComplete="off"  />
                                         </Form.Group>
                                     </Col>
                                     <Col md={1}>

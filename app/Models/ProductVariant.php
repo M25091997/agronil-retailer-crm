@@ -17,4 +17,8 @@ class ProductVariant extends Model
     {
         return $this->hasMany(ProductBulkPrice::class);
     }
+    public function bulk()
+    {
+        return $this->hasMany(ProductBulkPrice::class);
+    }
 }

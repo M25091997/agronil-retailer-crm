@@ -113,9 +113,9 @@ export default function SubCategoryForm({ subCategory = null, categories }) {
                             <form onSubmit={handleSubmit} encType="multipart/form-data">
                                 <div className="col-lg-12">
                                     <div className="mb-3">
-                                        <div class="form-group">
+                                        <div className="form-group">
                                             <label for="exampleFormControlSelect1">Select Category</label>
-                                            <select class="form-control" name="category_id" id="exampleFormControlSelect1" value={form.category_id || ''}
+                                            <select className="form-control" name="category_id" id="exampleFormControlSelect1" value={form.category_id || ''}
                                                 onChange={(e) => setForm({ ...form, category_id: e.target.value })}>
                                                 <option value="">Choose...</option>
                                                 {categories.map((category) => (
@@ -133,7 +133,7 @@ export default function SubCategoryForm({ subCategory = null, categories }) {
 
                                 <div className="col-lg-12">
                                     <div className="mb-3">
-                                        <div class="form-group">
+                                        <div className="form-group">
                                             <label className="form-label"> Name <span className="text-danger">*</span></label>
                                             <input
                                                 type="text"

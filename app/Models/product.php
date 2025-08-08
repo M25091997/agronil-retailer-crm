@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 
+
 class Product extends Model
 {
     protected $fillable = ['name', 'sku', 'slug', 'sort_description', 'category_id', 'category', 'sub_category_id', 'sub_category', 'child_category_id', 'child_category', 'brand_id', 'brand', 'disease_id', 'disease', 'tags', 'description', 'specification', 'other_information', 'unit_type_id', 'unit_type', 'base_unit', 'is_active', 'top_selling', 'trending', 'featured', 'new_arrival', 'user_id', 'is_sale', 'thumnail_image', 'is_verified'];

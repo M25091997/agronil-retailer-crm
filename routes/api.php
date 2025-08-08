@@ -3,6 +3,8 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CommanController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\RetailerController;
+use App\Models\Retailer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,4 +18,5 @@ Route::get('/categories', [CommanController::class, 'get_categories']);
 // Protected routes
 Route::middleware(['auth:api', 'api.auth'])->group(function () {
     Route::get('/user/profile', [UserController::class, 'profile']);
+    Route::post('retailer', [RetailerController::class, 'store']);
 });
