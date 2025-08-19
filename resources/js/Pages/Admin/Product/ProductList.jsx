@@ -43,7 +43,7 @@ export default function ProductList({ products }) {
                                             <td>
                                                 {product.images[0] && (
                                                     <img
-                                                        src={`upload/${product.images[0].image_path}`}
+                                                        src={product.images[0].image_path}
                                                         alt={product.name}
                                                         width="100"
                                                         height="100"

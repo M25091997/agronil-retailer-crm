@@ -36,6 +36,10 @@ class RetailerController extends Controller
         $retailer->status = !$retailer->status;
         $retailer->save();
 
+        $retailer->user->update([
+            'status' => $retailer->status
+        ]);
+
         return response()->json([
             'status' => true,
             'message' => 'Retailer profile status updated successfully!'

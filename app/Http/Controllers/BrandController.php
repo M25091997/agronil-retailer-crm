@@ -61,10 +61,7 @@ class BrandController extends Controller
         // $brand->slug = $this->generateUniqueSlug($request->name);
 
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/categories'), $filename);
-            $brand->image = 'uploads/categories/' . $filename;
+            $brand->image = $request->file('image')->store('uploads/brands', 'public');
         }
 
         $brand->category_id = $request->category_id;
@@ -120,10 +117,13 @@ class BrandController extends Controller
         // $brand->slug = $this->generateUniqueSlug($request->name);
 
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/categories'), $filename);
-            $brand->image = 'uploads/categories/' . $filename;
+            $oldImage = $brand->getRawOriginal('image');
+
+            if ($oldImage && Storage::disk('public')->exists($oldImage)) {
+                Storage::disk('public')->delete($oldImage);
+            }
+
+            $brand->image = $request->file('image')->store('uploads/brands', 'public');
         }
 
         $brand->category_id = $request->category_id;
@@ -131,7 +131,7 @@ class BrandController extends Controller
         $brand->is_active = $request->has('is_active') ? true : false;
         $brand->update();
 
-        return response()->json(['message' => 'Brand name updated successfully.'], 200);
+        return response()->json(['message' => 'Brand  updated successfully.'], 200);
     }
 
     /**
@@ -139,10 +139,11 @@ class BrandController extends Controller
      */
     public function destroy(Brand $brand)
     {
-        if ($brand->image && Storage::exists($brand->image)) {
-            Storage::delete($brand->image);
-        }
+        $oldImage = $brand->getRawOriginal('image');
 
+        if ($oldImage && Storage::disk('public')->exists($oldImage)) {
+            Storage::disk('public')->delete($oldImage);
+        }
         $brand->delete();
 
         return response()->json(['message' => 'Brand name deleted successfully.']);

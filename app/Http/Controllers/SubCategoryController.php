@@ -60,10 +60,7 @@ class SubCategoryController extends Controller
         // $subCategory->slug = $this->generateUniqueSlug($request->name);
 
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/categories'), $filename);
-            $subCategory->image = 'uploads/categories/' . $filename;
+            $subCategory->image = $request->file('image')->store('uploads/categories', 'public');
         }
 
         $subCategory->category_id = $request->category_id ?? '';
@@ -116,10 +113,12 @@ class SubCategoryController extends Controller
         $data = $validator->validated();
 
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/categories'), $filename);
-            $data['image'] = 'uploads/categories/' . $filename;
+            $oldImage = $subCategory->getRawOriginal('image');
+
+            if ($oldImage && Storage::disk('public')->exists($oldImage)) {
+                Storage::disk('public')->delete($oldImage);
+            }
+            $data['image'] = $request->file('image')->store('uploads/categories', 'public');
         }
 
         $subCategory->update($data);
@@ -135,12 +134,12 @@ class SubCategoryController extends Controller
      */
     public function destroy(SubCategory $subCategory)
     {
-        if ($subCategory->image && Storage::exists($subCategory->image)) {
-            Storage::delete($subCategory->image);
+        $oldImage = $subCategory->getRawOriginal('image');
+        if ($oldImage && Storage::disk('public')->exists($oldImage)) {
+            Storage::disk('public')->delete($oldImage);
         }
 
         $subCategory->delete();
-
         return response()->json(['message' => 'Sub category deleted successfully.']);
     }
 }

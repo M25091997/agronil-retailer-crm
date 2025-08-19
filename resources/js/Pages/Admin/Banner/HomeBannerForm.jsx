@@ -161,7 +161,7 @@ export default function HomeBannerForm({ categories, banner = null }) {
                                     <Form.Control type="file" name="image" ref={fileInputRef} placeholder="" onChange={(e) => setForm({ ...form, image: e.target.files[0] })} />
                                     {banner?.image && (
                                         <img
-                                            src={`/${banner.image}`}
+                                            src={banner.image}
                                             alt="Current"
                                             style={{ width: 100, marginTop: 10 }}
                                         />

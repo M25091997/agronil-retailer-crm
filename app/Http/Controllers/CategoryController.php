@@ -59,11 +59,10 @@ class CategoryController extends Controller
         // $category->slug = $this->generateUniqueSlug($request->name);
 
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/categories'), $filename);
-            $category->image = 'uploads/categories/' . $filename;
+            $category->image = $request->file('image')->store('uploads/categories', 'public');
         }
+
+
 
         $category->description = $request->description ?? '';
         $category->is_active = $request->has('is_active') ? true : false;
@@ -112,7 +111,12 @@ class CategoryController extends Controller
 
         // Handle image upload if a new image is submitted
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('uploads/categories');
+            $oldImage = $category->getRawOriginal('image');
+
+            if ($oldImage && Storage::disk('public')->exists($oldImage)) {
+                Storage::disk('public')->delete($oldImage);
+            }
+            $data['image'] = $request->file('image')->store('uploads/categories', 'public');
         }
 
         $category->update($data);
@@ -129,9 +133,9 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        // Optional: delete image file too if stored
-        if ($category->image && Storage::exists($category->image)) {
-            Storage::delete($category->image);
+        $oldImage = $category->getRawOriginal('image');
+        if ($oldImage && Storage::disk('public')->exists($oldImage)) {
+            Storage::disk('public')->delete($oldImage);
         }
 
         $category->delete();

@@ -155,7 +155,7 @@ export default function BrandForm({ brand = null, categories }) {
                                         />
                                         {brand?.image && (
                                             <img
-                                                src={`/${brand.image}`}
+                                                src={brand.image}
                                                 alt="Current"
                                                 style={{ width: 100, marginTop: 10 }}
                                             />

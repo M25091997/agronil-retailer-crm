@@ -123,26 +123,26 @@ export default function ProductForm({ product = null, categories, unitTypes, bas
                 response = await axiosClient.post('/admin/products', formData);
             }
 
-            toast.success(response.data.message);
-            if (!isEditMode) {
-                setForm({
-                    name: '',
-                    image: null,
-                    description: '',
-                    is_active: '',
-                });
+            // toast.success(response.data.message);
+            // if (!isEditMode) {
+            //     setForm({
+            //         name: '',
+            //         image: null,
+            //         description: '',
+            //         is_active: '',
+            //     });
 
-                // Reset file input
-                if (fileInputRef.current) {
-                    fileInputRef.current.value = '';
-                }
-            }
+            //     // Reset file input
+            //     if (fileInputRef.current) {
+            //         fileInputRef.current.value = '';
+            //     }
+            // }
 
             // router.visit('/admin/categories'); // redirect to list
 
 
         } catch (error) {
-            toast.error(error.response?.data?.message || 'Something went wrong');
+            // toast.error(error.response?.data?.message || 'Something went wrong');
             if (error.response) {
                 console.error('Error response:', error.response.data);
                 setErrors(error.response.data.errors || {});
@@ -292,7 +292,7 @@ export default function ProductForm({ product = null, categories, unitTypes, bas
                                         {form.images && Array.isArray(form.images) && form.images.map((img, idx) => (
                                             <div key={idx} className="mb-2">
                                                 <img
-                                                    src={`/storage/${img.image_path}`}
+                                                    src={img.image_path}
                                                     alt="Product"
                                                     style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '5px' }}
                                                 />

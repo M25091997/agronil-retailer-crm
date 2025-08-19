@@ -22,5 +22,6 @@ export default defineConfig(({ mode }) => {
         define: {
             BASE_URL: JSON.stringify(env.VITE_BASE_URL), // load from .env
         },
+
     };
 });

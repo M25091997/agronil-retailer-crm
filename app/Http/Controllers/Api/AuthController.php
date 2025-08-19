@@ -78,6 +78,7 @@ class AuthController extends Controller
 
         $token = $user->createToken('authToken')->accessToken;
 
+        $user->load('retailer');
         return ApiResponse::success('Login successful.', [
             'user'  => $user,
             'token' => $token,

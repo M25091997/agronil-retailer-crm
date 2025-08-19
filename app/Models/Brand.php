@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Brand extends Model
 {
-    protected $fillable = ['name', 'slug', 'category_id', 'image', 'description', 'is_active', 'is_verified', 'user_id'];
+    protected $fillable = ['name', 'slug', 'category_id', 'image', 'description', 'is_active', 'is_verified', 'user_id', 'is_populer'];
 
 
     public function generateUniqueSlug($name)
@@ -39,6 +40,12 @@ class Brand extends Model
 
             $brand->slug = $slug;
         });
+    }
+
+
+    public function getImageAttribute($value)
+    {
+        return $value ? Storage::disk('public')->url($value) : '';
     }
 
     public function scopeWhereIsActive($query)

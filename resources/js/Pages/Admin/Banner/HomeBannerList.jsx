@@ -58,8 +58,8 @@ export default function HomeBannerList({ banners }) {
                                         <td>
                                             {item.image && (
                                                 <img
-                                                    src={`/${item.image}`}
-                                                    alt={item.name}
+                                                    src={item.image}
+                                                    alt={item.title}
                                                     width="200"
                                                     height="100"
                                                 />

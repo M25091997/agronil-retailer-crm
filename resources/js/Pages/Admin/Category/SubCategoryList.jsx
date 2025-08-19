@@ -69,7 +69,7 @@ export default function SubCategoryList({ subCategories }) {
                                         <td>
                                             {single.image && (
                                                 <img
-                                                    src={`/${single.image}`}  // e.g., "uploads/categories/my-icon.png"
+                                                    src={single.image}  // e.g., "uploads/categories/my-icon.png"
                                                     alt={single.name}
                                                     width="100"
                                                     height="100"

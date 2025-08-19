@@ -1,8 +1,28 @@
+import axiosClient from "@/axiosClient";
 import DashboardCard from "@/Components/Admin/DashboardCard";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 export default function Dashboard() {
+
+    const [dashboardData, setDashboardData] = useState({
+        approvedRetailers: 0,
+        pendingRetailers: 0,
+        totalProducts: 0,
+        superCategories: 0
+    });
+
+    useEffect(() => {
+        axiosClient.get('admin/dashboard-data')
+            .then(({ data }) => {
+                setDashboardData(data);
+            })
+            .catch(err => {
+                console.error("Error fetching dashboard data:", err);
+            });
+    }, []);
 
     return (
         <>
@@ -37,16 +57,16 @@ export default function Dashboard() {
 
                 <div className="row">
                     <div className="col-xl-3 col-md-6">
-                        <DashboardCard name="Category" qty="10" />
+                        <DashboardCard name="Total Approved Retailer" qty={dashboardData.approvedRetailers} />
                     </div>
                     <div className="col-xl-3 col-md-6">
-                        <DashboardCard name="Product" qty="10" />
+                        <DashboardCard name="Total Pending Retailer" qty={dashboardData.pendingRetailers} />
                     </div>
                     <div className="col-xl-3 col-md-6">
-                        <DashboardCard name="Retailer" qty="10" />
+                        <DashboardCard name="Total Products" qty={dashboardData.totalProducts} />
                     </div>
                     <div className="col-xl-3 col-md-6">
-                        <DashboardCard name="Super Category" qty="10" />
+                        <DashboardCard name="Super Category" qty={dashboardData.superCategories} />
                     </div>
 
                     <div className="col-xl-3 col-md-6">
@@ -57,7 +77,7 @@ export default function Dashboard() {
                                 <div className="row align-items-center">
                                     <div className="col-6">
                                         <span className="text-muted mb-3 lh-1 d-block text-truncate">
-                                            Number of Trades
+                                            Total Sales
                                         </span>
                                         <h4 className="mb-3">
                                             <span

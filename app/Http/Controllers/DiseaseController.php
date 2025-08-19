@@ -58,10 +58,7 @@ class DiseaseController extends Controller
         // $disease->slug = $this->generateUniqueSlug($request->name);
 
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/categories'), $filename);
-            $disease->image = 'uploads/categories/' . $filename;
+            $disease->image = $request->file('image')->store('uploads/diseases', 'public');
         }
 
         $disease->category_id = $request->category_id;
@@ -117,10 +114,12 @@ class DiseaseController extends Controller
         // $disease->slug = $this->generateUniqueSlug($request->name);
 
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/categories'), $filename);
-            $disease->image = 'uploads/categories/' . $filename;
+            $oldImage = $disease->getRawOriginal('image');
+
+            if ($oldImage && Storage::disk('public')->exists($oldImage)) {
+                Storage::disk('public')->delete($oldImage);
+            }
+            $disease->image = $request->file('image')->store('uploads/diseases', 'public');
         }
 
         $disease->category_id = $request->category_id;
@@ -136,8 +135,10 @@ class DiseaseController extends Controller
      */
     public function destroy(Disease $disease)
     {
-        if ($disease->image && Storage::exists($disease->image)) {
-            Storage::delete($disease->image);
+        $oldImage = $disease->getRawOriginal('image');
+
+        if ($oldImage && Storage::disk('public')->exists($oldImage)) {
+            Storage::disk('public')->delete($oldImage);
         }
 
         $disease->delete();

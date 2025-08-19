@@ -158,7 +158,7 @@ export default function SubCategoryForm({ subCategory = null, categories }) {
                                         />
                                         {subCategory?.image && (
                                             <img
-                                                src={`/${subCategory.image}`}
+                                                src={subCategory.image}
                                                 alt="Current"
                                                 style={{ width: 100, marginTop: 10 }}
                                             />

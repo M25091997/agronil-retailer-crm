@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\BaseUnitController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
@@ -43,6 +44,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/', function () {
         return Inertia::render('Dashboard');
     })->name('admin.dashboard');
+
+    Route::get('dashboard-data', [AdminDashboardController::class, 'getDashboardData']);
 
     // Route::resource('/categories', CategoryController::class);
     Route::resource('/categories', CategoryController::class)->names('admin.categories');

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->boolean('is_active')->default(false);
             $table->boolean('is_verified')->default(false);
             $table->unsignedBigInteger('user_id');
+            $table->boolean('is_populer')->default(false);
             $table->timestamps();
             $table->softDeletes();
 

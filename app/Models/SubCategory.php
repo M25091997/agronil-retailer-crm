@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class SubCategory extends Model
@@ -39,6 +40,11 @@ class SubCategory extends Model
 
             $subCategory->slug = $slug;
         });
+    }
+
+    public function getImageAttribute($value)
+    {
+        return $value ? Storage::disk('public')->url($value) : '';
     }
 
 

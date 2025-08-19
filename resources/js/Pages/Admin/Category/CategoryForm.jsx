@@ -74,6 +74,8 @@ export default function CategoryForm({ category = null }) {
                 if (fileInputRef.current) {
                     fileInputRef.current.value = '';
                 }
+            } else {
+
             }
 
             // router.visit('/admin/categories'); // redirect to list
@@ -169,7 +171,7 @@ export default function CategoryForm({ category = null }) {
                                         />
                                         {category?.image && (
                                             <img
-                                                src={`/${category.image}`}
+                                                src={category.image}
                                                 alt="Current"
                                                 style={{ width: 100, marginTop: 10 }}
                                             />

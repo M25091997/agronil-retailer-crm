@@ -65,4 +65,52 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function retailer()
+    {
+        return $this->hasOne(Retailer::class);
+    }
+
+    public function shippingAddress()
+    {
+        return $this->hasMany(ShippingAddress::class, 'user_id');
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'user_id')
+            ->select([
+                'id',
+                'user_id',
+                'status',
+                'invoice_no',
+                'shipping_address',
+                'total_amount',
+                'paid_amount',
+                'due_amount',
+                'payment_status',
+                'created_at'
+            ]);
+    }
+
+    public function orderDetails()
+    {
+        return $this->hasMany(Order::class, 'user_id');
+    }
+
+    public function cart()
+    {
+        return $this->hasMany(Cart::class, 'user_id');
+    }
+
+    public function wishlist()
+    {
+        return $this->hasMany(Wishlist::class, 'user_id');
+    }
+
+    public function recentViews()
+    {
+        return $this->hasMany(RecentView::class, 'user_id')->latest('updated_at')
+            ->limit(10);
+    }
 }

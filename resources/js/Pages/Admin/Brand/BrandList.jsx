@@ -73,7 +73,7 @@ export default function BrandList({ brands }) {
                                         <td>
                                             {brand.image && (
                                                 <img
-                                                    src={`/${brand.image}`}  // e.g., "uploads/categories/my-icon.png"
+                                                    src={brand.image}
                                                     alt={brand.name}
                                                     width="100"
                                                     height="100"

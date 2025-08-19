@@ -60,11 +60,9 @@ class HomeBannerController extends Controller
         $banner->title = $request->title;
         $banner->user_id = auth()->user()->id;
 
+
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/banners'), $filename);
-            $banner->image = 'uploads/banners/' . $filename;
+            $banner->image = $request->file('image')->store('uploads/banners', 'public');
         }
 
         $banner->category_id = $request->category_id ?? '';
@@ -122,15 +120,27 @@ class HomeBannerController extends Controller
             $homeBanner->title = $request->title;
             $homeBanner->user_id = auth()->user()->id;
 
+            // if ($request->hasFile('image')) {
+            //     if ($homeBanner->image && Storage::exists($homeBanner->image)) {
+            //         Storage::delete($homeBanner->image);
+            //     }
+            //     $uploadPath = 'uploads/banners/';
+            //     if ($request->hasFile('image')) {
+            //         $path = $request->file('image')->store($uploadPath, 'public');
+            //         $homeBanner->image = Storage::url($path);
+            //     }
+            // }
+
             if ($request->hasFile('image')) {
-                if ($homeBanner->image && Storage::exists($homeBanner->image)) {
-                    Storage::delete($homeBanner->image);
+                $oldImage = $homeBanner->getRawOriginal('image');
+
+                if ($oldImage && Storage::disk('public')->exists($oldImage)) {
+                    Storage::disk('public')->delete($oldImage);
                 }
-                $file = $request->file('image');
-                $filename = time() . '.' . $file->getClientOriginalExtension();
-                $file->move(public_path('uploads/banners'), $filename);
-                $homeBanner->image = 'uploads/banners/' . $filename;
+                $homeBanner->image = $request->file('image')->store('uploads/banners', 'public');
             }
+
+
 
             $homeBanner->category_id = $request->category_id ?? '';
             $homeBanner->description = $request->description ?? '';
@@ -146,8 +156,10 @@ class HomeBannerController extends Controller
      */
     public function destroy(HomeBanner $homeBanner)
     {
-        if ($homeBanner->image && Storage::exists($homeBanner->image)) {
-            Storage::delete($homeBanner->image);
+        $oldImage = $homeBanner->getRawOriginal('image');
+
+        if ($oldImage && Storage::disk('public')->exists($oldImage)) {
+            Storage::disk('public')->delete($oldImage);
         }
 
         $homeBanner->delete();

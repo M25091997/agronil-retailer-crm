@@ -76,7 +76,7 @@ export default function CategoryList({ categories }) {
                                         <td>
                                             {category.image && (
                                                 <img
-                                                    src={`/${category.image}`}  // e.g., "uploads/categories/my-icon.png"
+                                                    src={category.image}  // e.g., "uploads/categories/my-icon.png"
                                                     alt={category.name}
                                                     width="100"
                                                     height="100"

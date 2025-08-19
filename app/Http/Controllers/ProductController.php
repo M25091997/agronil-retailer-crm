@@ -66,6 +66,14 @@ class ProductController extends Controller
             $disease = Disease::find($validated['disease_id'])->value('name');
         }
 
+        if ($validated['unit_type_id']) {
+            $unitType =  UnitType::find($validated['unit_type_id'])->value('name');
+        }
+
+        if ($validated['base_unit_id']) {
+            $baseUnit =  BaseUnit::find($validated['base_unit_id'])->value('name');
+        }
+
         // 1. Create Product
         $product = Product::create([
             'name' => $validated['name'],
@@ -79,7 +87,9 @@ class ProductController extends Controller
             'disease' =>  $disease ?? '',
             'sku' => $validated['sku'],
             'unit_type_id' => $validated['unit_type_id'],
-            'base_unit-id' => $validated['base_unit_id'],
+            'unit_type' =>  $unitType ?? '',
+            'base_unit_id' => $validated['base_unit_id'],
+            'base_unit' =>  $baseUnit ?? '',
             'hsn_code' => $validated['hsn_code'],
             'sort_description' => $validated['sort_description'],
             'description' => $validated['description'],
@@ -104,12 +114,17 @@ class ProductController extends Controller
         // 3. Store product variants
         foreach (json_decode($validated['product_variant_price']) as $variant) {
             // return $variant;
+
+            if ($variant->base_unit_id) {
+                $baseUnitName =  BaseUnit::find($variant->base_unit_id)->value('name');
+            }
+
             $variantModel = ProductVariant::create([
                 'product_id' => $product->id,
-                'unit_type_id' => $variant->unit_type_id ?? null,
-                'unit_type' => $unitType ?? "demo",
+                'unit_type_id' =>  $product->unit_type_id,
+                'unit_type' =>  $product->unit_type,
                 'base_unit_id' => $variant->base_unit_id,
-                'base_unit' => $baseUnit ??  "demo",
+                'base_unit' =>  $baseUnitName,
                 'quantity' => $variant->quantity,
                 'price' => $variant->price,
                 'original_price' => $variant->original_price,
