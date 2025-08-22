@@ -110,6 +110,38 @@ class CartController extends Controller
     }
 
 
+    // update multiple cart updates at once.
+    public function updateCartItems(Request $request)
+    {
+        $user = $request->user();
+
+        if (!$user) {
+            return ApiResponse::error('User is not authenticated.', 401);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'carts'               => 'required|array',
+            'carts.*.cart_id'     => 'required|integer|exists:carts,id',
+            'carts.*.quantity'    => 'required|integer|min:1',
+        ]);
+
+        if ($validator->fails()) {
+            return ApiResponse::error($validator->errors()->first(), 422);
+        }
+
+        foreach ($request->carts as $cart) {
+            $cartItem = $user->cart()->findOrFail($cart['cart_id']);
+            $cartItem->update(['quantity' => $cart['quantity']]);
+        }
+
+        $order = new OrderController();
+        return $order->create_order($request);
+
+
+
+        return ApiResponse::success('Cart items updated successfully', $result);
+    }
+
 
     // wishlist
     public function addToWishlist(Request $request)

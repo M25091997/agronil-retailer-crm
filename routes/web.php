@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\ManageOrderController;
 use App\Http\Controllers\BaseUnitController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
@@ -65,6 +66,15 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::get('/approved', [RetailerController::class, 'approvedRetailer']);
         Route::get('/status-update/{retailer}', [RetailerController::class, 'statusUpdate']);
         Route::delete('/{retailer}', [RetailerController::class, 'destroy']);
+    });
+
+    Route::prefix('/orders')->group(function () {
+        Route::get('', [ManageOrderController::class, 'orders']);
+        Route::get('details/{invoice_no}', [ManageOrderController::class, 'details']);
+        Route::get('payments/{invoice_no}', [ManageOrderController::class, 'payments']);
+        Route::post('payment/settlement', [ManageOrderController::class, 'settlement']);
+        Route::post('payment/{id}/update-status', [ManageOrderController::class, 'updateStatus']);
+        Route::get('/details/{order_id}/updated-payments', [ManageOrderController::class, 'updated_payments']);
     });
 
 

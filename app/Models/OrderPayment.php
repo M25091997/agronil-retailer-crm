@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class OrderPayment extends Model
 {
@@ -11,5 +12,10 @@ class OrderPayment extends Model
     public function order()
     {
         return $this->belongsTo(Order::class, 'order_id');
+    }
+
+    public function getPaymentSlipAttribute($value)
+    {
+        return $value ? Storage::disk('public')->url($value) : '';
     }
 }

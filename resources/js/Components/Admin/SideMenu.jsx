@@ -1,5 +1,5 @@
 import { Link, usePage } from "@inertiajs/react";
-import { Cog, House, Image, ShoppingBag, Users } from "lucide-react";
+import { Cog, House, Image, ShoppingBag, Users, Gift, Boxes } from "lucide-react";
 import { useState } from "react";
 
 export default function SideMenu() {
@@ -9,6 +9,8 @@ export default function SideMenu() {
         products: false,
         banners: false,
         retailer: false,
+        offers: false,
+        orders: false,
     });
 
     const toggleDropdown = (key) => {
@@ -135,6 +137,52 @@ export default function SideMenu() {
                             <li>
                                 <Link href="/admin/retailer/approved">
                                     Approval Retailer
+                                </Link>
+                            </li>
+                        </ul>
+                    )}
+
+                </li>
+
+                <li className={openDropdowns.offers ? "mm-active" : ""}>
+                    <a href="javascript: void(0);" className={openDropdowns.masterkey ? "has-arrow mm-active" : "has-arrow"} onClick={() => toggleDropdown("offers")}>
+                        <Gift />
+                        <span data-key="t-authentication">Offer & Discount</span>
+                    </a>
+                    {openDropdowns.offers && (
+                        <ul className="sub-menu" aria-expanded="false">
+                            <li>
+                                <Link href="/admin/retailer/pending">
+                                    Coupan Code
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/admin/retailer/approved">
+                                    Redeam Point
+                                </Link>
+                            </li>
+                        </ul>
+                    )}
+
+                </li>
+
+                <li class="menu-title mt-2" data-key="t-components">Orders</li>
+
+                <li className={openDropdowns.orders ? "mm-active" : ""}>
+                    <a href="javascript: void(0);" className={openDropdowns.masterkey ? "has-arrow mm-active" : "has-arrow"} onClick={() => toggleDropdown("orders")}>
+                        <Boxes />
+                        <span data-key="t-authentication">Product Order</span>
+                    </a>
+                    {openDropdowns.orders && (
+                        <ul className="sub-menu" aria-expanded="false">
+                            <li>
+                                <Link href="/admin/orders?status=pending">
+                                    New Order
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/admin/orders">
+                                    All Orders
                                 </Link>
                             </li>
                         </ul>

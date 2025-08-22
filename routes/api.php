@@ -39,6 +39,7 @@ Route::middleware(['auth:api', 'api.auth'])->group(function () {
         Route::post('/recent-views', [CartController::class, 'recent_views']);
         Route::get('/recent-views', [CartController::class, 'getRecentViewProducts']);
         Route::put('/cart/update', [CartController::class, 'updateCartQuantity']);
+        Route::put('/multiple-cart-updates', [CartController::class, 'updateCartItems']);
     });
 
     Route::group(['prefix' => 'order'], function () {
