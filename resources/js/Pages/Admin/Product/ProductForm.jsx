@@ -34,6 +34,27 @@ export default function ProductForm({ product = null, categories, unitTypes, bas
         product_variant_price: [],
     });
 
+
+    useEffect(() => {
+        const fetchDependencies = async () => {
+            if (isEditMode && product?.category_id) {
+                try {
+                    const response = await axiosClient.get(
+                        `/admin/category/dependencies/${product.category_id}`
+                    );
+                    setSubCategories(response.data.subcategories);
+                    setBrands(response.data.brands);
+                    setDiseases(response.data.diseases);
+                } catch (error) {
+                    console.error("Error fetching dependencies:", error);
+                }
+            }
+        };
+
+        fetchDependencies();
+    }, [isEditMode, product?.category_id]);
+
+
     useEffect(() => {
         if (isEditMode && product) {
             setForm({
@@ -56,6 +77,9 @@ export default function ProductForm({ product = null, categories, unitTypes, bas
             });
         }
     }, [product, isEditMode]);
+
+
+
 
 
 
@@ -118,12 +142,12 @@ export default function ProductForm({ product = null, categories, unitTypes, bas
 
             if (isEditMode) {
                 formData.append('_method', 'PUT');
-                response = await axiosClient.post(`/admin/products/${category.id}`, formData);
+                response = await axiosClient.post(`/admin/products/${product.id}`, formData);
             } else {
                 response = await axiosClient.post('/admin/products', formData);
             }
 
-            // toast.success(response.data.message);
+            toast.success(response.data.message);
             // if (!isEditMode) {
             //     setForm({
             //         name: '',

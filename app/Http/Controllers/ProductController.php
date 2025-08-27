@@ -60,27 +60,27 @@ class ProductController extends Controller
         // return json_decode($validated['product_variant_price']);
 
         if ($validated['brand_id']) {
-            $brand = Brand::find($validated['brand_id'])->value('name');
+            $brand = Brand::where('id', $validated['brand_id'])->value('name');
         }
         if ($validated['disease_id']) {
-            $disease = Disease::find($validated['disease_id'])->value('name');
+            $disease = Disease::where('id', $validated['disease_id'])->value('name');
         }
 
         if ($validated['unit_type_id']) {
-            $unitType =  UnitType::find($validated['unit_type_id'])->value('name');
+            $unitType =  UnitType::where('id', $validated['unit_type_id'])->value('name');
         }
 
         if ($validated['base_unit_id']) {
-            $baseUnit =  BaseUnit::find($validated['base_unit_id'])->value('name');
+            $baseUnit =  BaseUnit::where('id', $validated['base_unit_id'])->value('name');
         }
 
         // 1. Create Product
         $product = Product::create([
             'name' => $validated['name'],
             'category_id' => $validated['category_id'],
-            'category' => Category::find($validated['category_id'])->value('name'),
+            'category' => Category::where('id', $validated['category_id'])->value('name'),
             'sub_category_id' => $validated['sub_category_id'],
-            'sub_category' => SubCategory::find($validated['sub_category_id'])->value('name'),
+            'sub_category' => SubCategory::where('id', $validated['sub_category_id'])->value('name'),
             'brand_id' => $validated['brand_id'],
             'brand' => $brand ?? '',
             'disease_id' => $validated['disease_id'],
@@ -116,7 +116,7 @@ class ProductController extends Controller
             // return $variant;
 
             if ($variant->base_unit_id) {
-                $baseUnitName =  BaseUnit::find($variant->base_unit_id)->value('name');
+                $baseUnitName =  BaseUnit::where('id', $variant->base_unit_id)->value('name');
             }
 
             $variantModel = ProductVariant::create([
@@ -155,7 +155,7 @@ class ProductController extends Controller
             }
         }
 
-        return response()->json(['message' => 'Product added successfully.']);
+        return response()->json(['message' => 'Product added successfully.', 'status' => true]);
     }
 
     /**
@@ -186,7 +186,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, product $product)
     {
-        //
+        return $request->all();
     }
 
     /**

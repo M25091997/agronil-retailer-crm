@@ -1,7 +1,7 @@
 import { Link, router } from "@inertiajs/react";
 import { Bell, CircleArrowRight, LayoutGrid, Moon, Search, Settings, Sun } from "lucide-react";
 import { useState } from "react";
-export default function NavBar({ mobileMenu, setMobileMenu }) {
+export default function NavBar() {
     const [open, setOpen] = useState(false);
 
     const logoutHandle = () => {
@@ -33,26 +33,9 @@ export default function NavBar({ mobileMenu, setMobileMenu }) {
                     </Link>
                 </div>
 
-                {/* Desktop toggle button */}
-                <button
-                    type="button"
-                    className="btn btn-sm px-3 font-size-16 header-item d-none d-lg-block"
-                    id="vertical-menu-btn-desktop"
-                    onClick={() => setMobileMenu(!mobileMenu)}
-                >
+                <button type="button" className="btn btn-sm px-3 font-size-16 header-item" id="vertical-menu-btn">
                     <i className="fa fa-fw fa-bars"></i>
                 </button>
-
-                {/* Mobile/Tablet toggle button */}
-                <button
-                    type="button"
-                    className="btn btn-sm px-3 font-size-16 header-item d-block d-lg-none"
-                    id="vertical-menu-btn-mobile"
-                    onClick={() => setMobileMenu(!mobileMenu)}
-                >
-                    <i className="fa fa-fw fa-bars"></i>
-                </button>
-
 
                 {/* <!-- App Search--> */}
                 <form className="app-search d-none d-lg-block">

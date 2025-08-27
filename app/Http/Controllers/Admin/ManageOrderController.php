@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\OrderPayment;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -119,6 +122,65 @@ class ManageOrderController extends Controller
         return response()->json([
             'status' => true,
             'payments' =>  $payments
+        ]);
+    }
+
+    public function reports()
+    {
+        return Inertia::render('Admin/Order/Reports', [
+            'categories' => Category::whereIsActive()->get(),
+        ]);
+    }
+
+    public function get_reports(Request $request)
+    {
+        $query = OrderItem::with(['order', 'order.user', 'product']); // eager load product + order
+
+        // Filter by category_id
+        if ($request->filled('category_id')) {
+            $query->whereHas('product', function ($q) use ($request) {
+                $q->where('category_id', $request->category_id);
+            });
+        }
+
+        // Filter by sub_category_id
+        if ($request->filled('sub_category_id')) {
+            $query->whereHas('product', function ($q) use ($request) {
+                $q->where('sub_category_id', $request->sub_category_id);
+            });
+        }
+
+        // Filter by brand_id
+        if ($request->filled('brand_id')) {
+            $query->whereHas('product', function ($q) use ($request) {
+                $q->where('brand_id', $request->brand_id);
+            });
+        }
+
+        // Filter by disease_id
+        if ($request->filled('disease_id')) {
+            $query->whereHas('product', function ($q) use ($request) {
+                $q->where('disease_id', $request->disease_id);
+            });
+        }
+
+        $reports = $query->get();
+
+        // Calculate total sales
+        $totalSales = $reports->sum(function ($item) {
+            return $item->price * $item->quantity;
+        });
+
+        // Calculate total sales
+        $totalItems = $reports->sum(function ($item) {
+            return $item->quantity;
+        });
+
+        return response()->json([
+            'status'      => true,
+            'total_sales' => $totalSales,
+            'total_items' => $totalItems,
+            'orders'      => $reports,
         ]);
     }
 }

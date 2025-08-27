@@ -22,7 +22,13 @@ Route::get('/categories', [CommanController::class, 'get_categories']);
 Route::get('/brands', [CommanController::class, 'get_brands']);
 Route::get('/diseases', [CommanController::class, 'get_diseases']);
 Route::get('/silder-banners', [CommanController::class, 'get_silderBanners']);
-Route::post('/product-filter', [CommanController::class, 'product_filter']);
+Route::post('/product-filter', [CommanController::class, 'productFilter']);
+
+//products
+Route::prefix('product')->group(function () {
+    Route::get('/tools', [CommanController::class, 'tools']);
+});
+
 
 
 // Protected routes
@@ -49,6 +55,11 @@ Route::middleware(['auth:api', 'api.auth'])->group(function () {
         Route::get('/create', [OrderController::class, 'create_order']);
         Route::post('/checkout', [OrderController::class, 'checkout']);
         Route::get('', [OrderController::class, 'myOrder']);
+    });
+
+    Route::group(['prefix' => 'discount'], function () {
+        Route::get('coupons', [CommanController::class, 'coupons']);
+        Route::post('validate', [CommanController::class, 'discount_validate']);
     });
 });
 

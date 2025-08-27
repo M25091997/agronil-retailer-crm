@@ -18,7 +18,7 @@
         <link href="{{ asset('admin/assets/css/bootstrap.min.css') }}" id="bootstrap-style" rel="stylesheet"
             type="text/css" />
         <link href="{{ asset('admin/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
-    
+
 
         <!-- Scripts -->
         @routes
@@ -27,7 +27,7 @@
         @inertiaHead
     </head>
 
-    <body>
+    <body className="pace-done sidebar-enable">
 
         <!-- Begin page -->
         <div id="layout-wrapper">

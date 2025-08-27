@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\ManageOrderController;
 use App\Http\Controllers\BaseUnitController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DiscountCouponController;
 use App\Http\Controllers\DiseaseController;
 use App\Http\Controllers\HomeBannerController;
 use App\Http\Controllers\ProductController;
@@ -75,6 +76,12 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::post('payment/settlement', [ManageOrderController::class, 'settlement']);
         Route::post('payment/{id}/update-status', [ManageOrderController::class, 'updateStatus']);
         Route::get('/details/{order_id}/updated-payments', [ManageOrderController::class, 'updated_payments']);
+        Route::get('/reports', [ManageOrderController::class, 'reports']);
+        Route::post('/reports', [ManageOrderController::class, 'get_reports']);
+    });
+
+    Route::prefix('/discount')->group(function () {
+        Route::get('/coupons', [DiscountCouponController::class, 'index']);
     });
 
 
