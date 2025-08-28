@@ -81,7 +81,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     });
 
     Route::prefix('/discount')->group(function () {
-        Route::get('/coupons', [DiscountCouponController::class, 'index']);
+        Route::resource('/coupons', DiscountCouponController::class);
+        // Route::get('/coupons', [DiscountCouponController::class, 'index']);
     });
 
 

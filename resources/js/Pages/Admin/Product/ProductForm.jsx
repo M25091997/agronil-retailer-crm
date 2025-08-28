@@ -3,7 +3,7 @@ import PageHeader from "@/Components/Admin/PageHeader";
 import ProductVariantsForm from "@/Components/Admin/ProductVariantsForm";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import React, { useEffect, useState } from "react";
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import { toast } from "react-toastify";
 
@@ -59,14 +59,14 @@ export default function ProductForm({ product = null, categories, unitTypes, bas
         if (isEditMode && product) {
             setForm({
                 name: product.name,
-                category_id: product.category_id,
-                sub_category_id: product.sub_category_id,
-                brand_id: product.brand_id,
-                disease_id: product.disease_id,
+                category_id: product.category_id || '',
+                sub_category_id: product.sub_category_id || '',
+                brand_id: product.brand_id || '',
+                disease_id: product.disease_id || '',
                 sku: product.sku,
-                unit_type_id: product.unit_type_id,
-                base_unit_id: product.base_unit_id,
-                images: product.images,
+                unit_type_id: product.unit_type_id || '',
+                base_unit_id: product.base_unit_id || '',
+                images: '',
                 hsn_code: product.hsn_code,
                 sort_description: product.sort_description,
                 description: product.description,
@@ -112,7 +112,7 @@ export default function ProductForm({ product = null, categories, unitTypes, bas
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // if (!validate()) return
+        if (!validate()) return
 
         const formData = new FormData();
 
@@ -135,6 +135,7 @@ export default function ProductForm({ product = null, categories, unitTypes, bas
         // }
         // formData.append('product_variant_price', JSON.stringify(form.product_variant_price));
 
+        console.log(form);
         console.log(form.product_variant_price);
 
         try {
@@ -162,7 +163,7 @@ export default function ProductForm({ product = null, categories, unitTypes, bas
             //     }
             // }
 
-            // router.visit('/admin/categories'); // redirect to list
+            router.visit('/admin/products'); // redirect to list
 
 
         } catch (error) {
@@ -182,13 +183,20 @@ export default function ProductForm({ product = null, categories, unitTypes, bas
 
         if (!form.name) temp.name = 'Product name is required.';
         if (!form.sku) temp.sku = 'Product sku is required.';
+        if (!form.description) temp.description = 'Product description is required.';
         // if (!form.sort_description) temp.sort_description = 'Product sort description is required.';
         if (!form.category_id) temp.category_id = 'Product category is required.';
         if (!form.sub_category_id) temp.sub_category_id = 'Product sub category is required.';
-        if (!isEditMode && !form.images) temp.images = 'Product images is required.';
+        if (!isEditMode && (!form.images || form.images.length === 0)) {
+            temp.images = "Product images are required.";
+        }
+        if (!form.product_variant_price || form.product_variant_price.length === 0) {
+            temp.product_variant_price = "Product variant & price are required.";
+        }
 
         setErrors(temp);
-        return temp;
+
+        return Object.keys(temp).length === 0;
     }
 
 
@@ -364,6 +372,7 @@ export default function ProductForm({ product = null, categories, unitTypes, bas
 
                             <hr></hr>
                             <h6 className="text-info mb-2 mt-3">📦 Product Variant & Pricing</h6>
+                            {errors.product_variant_price && <div className="text-danger mb-3">{errors.product_variant_price}</div>}
                             {/* <Row>
 
                             <Col md="3">
@@ -469,6 +478,8 @@ export default function ProductForm({ product = null, categories, unitTypes, bas
                                     setForm({ ...form, product_variant_price: variants })
                                 }
                             />
+
+
 
 
 
@@ -616,8 +627,8 @@ export default function ProductForm({ product = null, categories, unitTypes, bas
                                 {isEditMode ? 'Update' : 'Save'} Product
                             </Button>
 
-                            <Link href="/admin/home-banners"> <Button type="button" variant="danger"
-                                className="btn btn-sm waves-effect waves-light  mb-3"> Cancel</Button>
+                            <Link href="/admin/products"> <Button type="button" variant="danger"
+                                className="btn btn-sm waves-effect waves-light  mb-3"> Back</Button>
                             </Link>
                         </Form>
                     </Card.Body>

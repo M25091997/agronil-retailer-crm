@@ -21,15 +21,21 @@ return new class extends Migration
             $table->boolean('is_all')->default(true);
             $table->string('user_id')->nullable();
             $table->enum('discount_on', ['varient', 'bulk', 'all'])->nullable();
-            $table->boolean('is_minimun')->default(false);
-            $table->decimal('order_value', 10, 2);
+            $table->boolean('is_minimum')->default(false);
+            $table->decimal('order_value', 10, 2)->nullable();
             $table->boolean('is_expiry')->default(false);
-            $table->date('expiry_date');
+            $table->date('expiry_date')->nullable();
             $table->boolean('is_limit')->default(false);
             $table->string('limit')->nullable();
+            $table->integer('usage_limit')->nullable();   // total uses
+            $table->integer('used_count')->default(0);   // how many times coupon used
+            $table->boolean('is_category')->default(false);
+            $table->unsignedBigInteger('category_id')->nullable();
             $table->boolean('is_active')->default(1);
             $table->timestamps();
             $table->softDeletes();
+
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
         });
     }
 

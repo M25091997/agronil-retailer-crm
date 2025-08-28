@@ -4,6 +4,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { usePage } from "@inertiajs/react";
 
 export default function Dashboard() {
 
@@ -23,6 +24,16 @@ export default function Dashboard() {
                 console.error("Error fetching dashboard data:", err);
             });
     }, []);
+
+
+    const { url } = usePage();
+
+    useEffect(() => {
+        if (url === "/dashboard" && !localStorage.getItem("dashboardFirstLoad")) {
+            localStorage.setItem("dashboardFirstLoad", "true");
+            window.location.reload();
+        }
+    }, [url]);
 
     return (
         <>
