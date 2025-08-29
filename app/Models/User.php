@@ -40,7 +40,8 @@ class User extends Authenticatable
         'referral_code',
         'status',
         'role',
-        'remember_token'
+        'remember_token',
+        'reward_points',
     ];
 
     /**

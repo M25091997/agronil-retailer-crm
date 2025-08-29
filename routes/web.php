@@ -11,6 +11,7 @@ use App\Http\Controllers\HomeBannerController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RetailerController;
+use App\Http\Controllers\RewardSettingController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\UnitTypeController;
 use Illuminate\Foundation\Application;
@@ -82,6 +83,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 
     Route::prefix('/discount')->group(function () {
         Route::resource('/coupons', DiscountCouponController::class);
+        Route::resource('/rewardsetting', RewardSettingController::class);
         // Route::get('/coupons', [DiscountCouponController::class, 'index']);
     });
 

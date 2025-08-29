@@ -60,6 +60,7 @@ Route::middleware(['auth:api', 'api.auth'])->group(function () {
     Route::group(['prefix' => 'discount'], function () {
         Route::get('coupons', [CommanController::class, 'coupons']);
         Route::post('validate', [CommanController::class, 'discount_validate']);
+        Route::post('redeem',  [CommanController::class, 'applyRedeem']);
     });
 });
 

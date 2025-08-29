@@ -255,6 +255,38 @@ class CommanController extends Controller
     }
 
 
+    public function applyRedeem(Request $request)
+    {
+        $order = new OrderController();
+        $user = $request->user();
+        if (!$user) {
+            return ApiResponse::error('User is not authenticated.', 401);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'product_amount' => 'nullable|min:1|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return ApiResponse::error('Validation failed', $validator->errors(), 422);
+        }
+
+        $points = $user->reward_points;
+        $total = $request->product_amount;
+
+
+        if ($points < 100) {
+            return response()->json(['status' => false, 'message' => 'Not enough redeem points!'], 422);
+        }
+
+        $redeem = $order->pointCheckout($points, $total);
+
+        return response()->json([
+            'redeem_discount' => $redeem['earned'],
+        ]);
+    }
+
+
 
     public function productFilter(Request $request)
     {

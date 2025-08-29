@@ -11,6 +11,8 @@ use App\Models\OrderPayment;
 use App\Models\Product;
 use App\Models\ProductBulkPrice;
 use App\Models\ProductVariant;
+use App\Models\RewardHistory;
+use App\Models\RewardSetting;
 use App\Models\ShippingAddress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -154,21 +156,36 @@ class OrderController extends Controller
 
     public function checkout(Request $request)
     {
+        // $points = 200;
+        // $total = 18308;
+
+        // return       $redeem = $this->pointCheckout($points, $total);
+
         $user = $request->user();
         if (!$user) {
             return ApiResponse::error('User is not authenticated.', 401);
         }
 
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'shipping_address_id' => 'required|exists:shipping_addresses,id',
             'payment_method' => 'required|string|in:cod,card,wallet,upi,qrcode,online',
             'pay_amount' => 'nullable|min:0|integer',
             'discount_type' => 'nullable',
             'coupan_code' => 'nullable',
             'payment_slip' => 'required|file|mimes:jpg,jpeg,png,pdf|max:6048',
+            'is_redeem' => 'nullable|boolean'
         ]);
 
+        if ($validator->fails()) {
+            return ApiResponse::error('Validation failed', $validator->errors(), 422);
+        }
 
+        $validated = $validator->validated();
+        $points = $user->reward_points;
+
+        if ($request->is_redeem && $points < 100) {
+            return response()->json(['status' => false, 'message' => 'Not enough redeem points!'], 422);
+        }
 
         // Fetch cart items for this user
         // $cartItems = Cart::where('user_id', $user->id)
@@ -185,6 +202,7 @@ class OrderController extends Controller
         $total_tax = 0;
         $gst_type = '';
         $gst_amount = 0;
+        $redeem_value = 0;
 
 
         $address = $user->shippingAddress()
@@ -279,10 +297,26 @@ class OrderController extends Controller
                     'price' => $price,
                     'total' => $subtotal,
                 ]);
+            } // loop end
+
+
+            $redeem = $this->pointCheckout($points, $total);
+
+
+            if ($request->is_redeem && $redeem['redeem'] > 0) {
+                $user->decrement('reward_points', $points);
+                $redeem_value = $redeem['redeem'];
+                RewardHistory::create([
+                    'user_id' => $user->id,
+                    'points'  => -$points,
+                    'type'    => 'redeem',
+                    'order_id' => $order->id,
+                    'amount' => $redeem_value
+                ]);
             }
 
             // Update total
-            $finalAmount = ($total + $shippingCharge +  $total_tax +  $gst_amount) - $discount;
+            $finalAmount = ($total + $shippingCharge +  $total_tax +  $gst_amount) - ($discount + $redeem_value);
             $due_amount   =  $finalAmount - $request->pay_amount;
             if ($due_amount <= 0) {
                 $paymentStatus = 'Paid';
@@ -292,7 +326,7 @@ class OrderController extends Controller
                 $paymentStatus = 'Pending';
             }
 
-            $order->update(['amount' => $total, 'total_amount' => $finalAmount, 'due_amount' => $due_amount, 'payment_status' => $paymentStatus, 'invoice_no' => 'INV-' . str_pad($order->id, 6, '0', STR_PAD_LEFT)]);
+            $order->update(['amount' => $total, 'total_amount' => $finalAmount, 'due_amount' => $due_amount, 'payment_status' =>  $paymentStatus, 'redeem' => $redeem_value ?? 0,  'invoice_no' => 'INV-' . str_pad($order->id, 6, '0', STR_PAD_LEFT)]);
             // $order->update(['amount' => $total, 'total_amount' => $finalAmount, 'due_amount' => $due_amount, 'payment_status' => $paymentStatus, 'invoice_no' => 1]);
 
 
@@ -304,8 +338,18 @@ class OrderController extends Controller
                 'payment_type'   => $request->payment_type ?? 'credit', // or 'credit', 'wallet', etc.
                 'amount'         => $request->pay_amount,
                 'payment_slip'   => $slip,
-                'status'         => 'pending', // based on your logic
+                'status'         => 'pending',
             ]);
+
+            if ($redeem['earned'] > 0) {
+                $user->increment('reward_points', $redeem['earned']);
+                RewardHistory::create([
+                    'user_id' => $user->id,
+                    'points' => $redeem['earned'],
+                    'type' => 'earn',
+                    'order_id' => $order->id,
+                ]);
+            }
 
             // Clear cart
             Cart::where('user_id', $user->id)->delete();
@@ -318,6 +362,8 @@ class OrderController extends Controller
             return ApiResponse::error($e->getMessage(), 500);
         }
     }
+
+
 
 
 
@@ -430,5 +476,34 @@ class OrderController extends Controller
         }
 
         return ApiResponse::success('Your orders', $orders);
+    }
+
+
+    public function pointCheckout($redeemPoints, $amount)
+    {
+        $setting = RewardSetting::where('is_active', 1)
+            ->where('min_order_amount', '<=', $amount)
+            ->orderByDesc('min_order_amount') // pick the closest lower rule
+            ->first();
+
+        if ($setting) {
+            // Calculate earned points
+            $earnedPoints = floor($amount / $setting->min_order_amount) * $setting->points_per_amount;
+
+            // Redeem calculation
+            $redeemValue = $redeemPoints * $setting->redeem_value;
+
+            return [
+                'earned' => $earnedPoints,
+                'redeem'  => $redeemValue,
+                // 'setting'       => $setting,
+            ];
+        }
+
+        return [
+            'earned' => 0,
+            'redeem'  => 0,
+            // 'setting'       => null,
+        ];
     }
 }

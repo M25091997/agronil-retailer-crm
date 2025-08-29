@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique()->default('');
-            $table->string('phone')->unique()->default('');
+            $table->string('email')->unique()->nullable();
+            $table->string('phone')->unique()->nullable();
             $table->string('otp', 6)->nullable();
             $table->string('pincode')->default('');
             $table->timestamp('otp_expire_at')->nullable();
@@ -30,7 +30,7 @@ return new class extends Migration
             $table->string('latitude')->default('');
             $table->string('longitude')->default('');
             $table->string('city')->default('');
-            $table->string('referral_code')->default('')->unique();
+            $table->string('referral_code')->unique()->nullable();
             $table->boolean('status')->default(false);
             $table->string('role')->default('');
             $table->rememberToken();

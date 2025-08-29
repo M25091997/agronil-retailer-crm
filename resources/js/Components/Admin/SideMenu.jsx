@@ -121,7 +121,7 @@ export default function SideMenu({ mobileMenu }) {
                     {openDropdowns.offers && (
                         <ul className="sub-menu" aria-expanded="false">
                             <li><Link href="/admin/discount/coupons">Coupon Code</Link></li>
-                            <li><Link href="/admin/discount/redeempoint">Redeem Point</Link></li>
+                            <li><Link href="/admin/discount/rewardsetting">Reward Setting</Link></li>
                         </ul>
                     )}
                 </li>

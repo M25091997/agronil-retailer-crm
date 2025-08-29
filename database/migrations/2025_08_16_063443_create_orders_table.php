@@ -23,6 +23,7 @@ return new class extends Migration
 
             $table->decimal('amount', 12, 2);           // Subtotal
             $table->decimal('discount', 12, 2)->default(0);
+            $table->decimal('redeem', 8, 2)->default(0);
             $table->decimal('shipping_charge', 12, 2)->default(0);
             $table->decimal('tax', 12, 2)->default(0);
             $table->string('gst_type')->nullable();     // Instead of decimal

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    protected $fillable = ['user_id', 'invoice_no', 'status', 'shipping_address', 'discount_type', 'coupon_code', 'amount', 'discount', 'shipping_charge', 'tax', 'gst_type', 'gst_amount', 'total_amount', 'paid_amount', 'due_amount', 'payment_status', 'notes'];
+    protected $fillable = ['user_id', 'invoice_no', 'status', 'shipping_address', 'discount_type', 'coupon_code', 'amount', 'discount', 'redeem', 'shipping_charge', 'tax', 'gst_type', 'gst_amount', 'total_amount', 'paid_amount', 'due_amount', 'payment_status', 'notes'];
 
     public function getShippingAddressAttribute($value)
     {
