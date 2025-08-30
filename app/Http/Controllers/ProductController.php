@@ -423,4 +423,33 @@ class ProductController extends Controller
     {
         //
     }
+
+
+    public function active()
+    {
+        return Inertia::render('Admin/Product/Manage/ActiveProduct', [
+            'products' => Product::with('images')->active()->latest()->get(),
+        ]);
+    }
+
+    public function status(Request $request, Product $product)
+    {
+        // return $request->all();
+        $data = $request->only([
+            'top_selling',
+            'trending',
+            'featured',
+            'new_arrival',
+            'is_sale',
+            'is_active',
+        ]);
+
+        $product->update($data);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Product status updated successfully!',
+            'product' => $product,
+        ]);
+    }
 }

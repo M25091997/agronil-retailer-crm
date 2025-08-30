@@ -1,5 +1,5 @@
 import { Link, usePage } from "@inertiajs/react";
-import { Cog, House, Image, ShoppingBag, Users, Gift, Boxes } from "lucide-react";
+import { Cog, House, Image, ShoppingBag, Users, Gift, Boxes, LayoutList } from "lucide-react";
 import { useState } from "react";
 
 export default function SideMenu({ mobileMenu }) {
@@ -10,7 +10,7 @@ export default function SideMenu({ mobileMenu }) {
         banners: false,
         retailer: false,
         offers: false,
-        orders: false,
+        manageProduct: false,
     });
 
     const toggleDropdown = (key) => {
@@ -122,6 +122,23 @@ export default function SideMenu({ mobileMenu }) {
                         <ul className="sub-menu" aria-expanded="false">
                             <li><Link href="/admin/discount/coupons">Coupon Code</Link></li>
                             <li><Link href="/admin/discount/rewardsetting">Reward Setting</Link></li>
+                        </ul>
+                    )}
+                </li>
+
+                {/* Manage Product */}
+                <li className={openDropdowns.manageProduct ? "mm-active" : ""}>
+                    <a
+                        href="javascript:void(0);"
+                        className={openDropdowns.manageProduct ? "has-arrow mm-active" : "has-arrow"}
+                        onClick={() => toggleDropdown("manageProduct")}
+                    >
+                        <LayoutList />
+                        <span data-key="t-authentication">Manage Product</span>
+                    </a>
+                    {openDropdowns.manageProduct && (
+                        <ul className="sub-menu" aria-expanded="false">
+                            <li><Link href="/admin/manage/activeproduct">Active Product</Link></li>
                         </ul>
                     )}
                 </li>

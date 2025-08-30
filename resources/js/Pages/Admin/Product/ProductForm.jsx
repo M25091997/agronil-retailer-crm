@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { Link, router } from "@inertiajs/react";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import { toast } from "react-toastify";
+import { CornerDownLeftIcon, Save } from "lucide-react";
 
 export default function ProductForm({ product = null, categories, unitTypes, baseUnits }) {
     const isEditMode = !!product;
@@ -167,7 +168,7 @@ export default function ProductForm({ product = null, categories, unitTypes, bas
 
 
         } catch (error) {
-            // toast.error(error.response?.data?.message || 'Something went wrong');
+            toast.error(error.response?.data?.message || 'Something went wrong');
             if (error.response) {
                 console.error('Error response:', error.response.data);
                 setErrors(error.response.data.errors || {});
@@ -193,6 +194,23 @@ export default function ProductForm({ product = null, categories, unitTypes, bas
         if (!form.product_variant_price || form.product_variant_price.length === 0) {
             temp.product_variant_price = "Product variant & price are required.";
         }
+
+        if (form.product_variant_price.length > 0) {
+            let invalidVariants = form.product_variant_price.filter(variant => {
+                return !variant.price ||
+                    !variant.original_price ||
+                    !variant.base_unit_id ||
+                    !variant.quantity ||
+                    !variant.unit_rate;
+            });
+
+            if (invalidVariants.length > 0) {
+                temp.product_variant_price = "Please fill all required fields in product variants!";
+            }
+        }
+        // if (!form.product_variant_price[0].base_unit_id || form.product_variant_price[0].original_price > form.product_variant_price[0].price) {
+        //     temp.product_variant_price = "Invaid Product variant.";
+        // }
 
         setErrors(temp);
 
@@ -624,11 +642,12 @@ export default function ProductForm({ product = null, categories, unitTypes, bas
 
                             <Button type="submit" variant="success"
                                 className="btn-sm waves-effect waves-light mb-3">
-                                {isEditMode ? 'Update' : 'Save'} Product
+                                <Save size={18} /> {isEditMode ? 'Update' : 'Save'}   Product
+
                             </Button>
 
                             <Link href="/admin/products"> <Button type="button" variant="danger"
-                                className="btn btn-sm waves-effect waves-light  mb-3"> Back</Button>
+                                className="btn btn-sm waves-effect waves-light  mb-3">  Back</Button>
                             </Link>
                         </Form>
                     </Card.Body>

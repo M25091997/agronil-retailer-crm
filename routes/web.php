@@ -87,6 +87,11 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         // Route::get('/coupons', [DiscountCouponController::class, 'index']);
     });
 
+    Route::prefix('manage')->group(function () {
+        Route::get('activeproduct', [ProductController::class, 'active']);
+        Route::put('update-status/{product}', [ProductController::class, 'status']);
+    });
+
 
     // Route::get('/category', function () {
     //     return Inertia::render('Admin/Category/CategoryList');

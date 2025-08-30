@@ -105,10 +105,10 @@ function ProductVariantsForm({ baseUnits, variants, onChange }) {
                             </Form.Group>
                         </Col>
 
-                        <Col md={2}>
+                        <Col md={1}>
                             <Form.Group>
-                                <Form.Label>Selling Unit (₹)</Form.Label>
                                 {/* <Form.Label>Price per Unit (₹)</Form.Label> */}
+                                <Form.Label>Selling Price (₹)</Form.Label>
                                 <Form.Control
                                     type="text"
                                     autoComplete="off"
@@ -120,12 +120,13 @@ function ProductVariantsForm({ baseUnits, variants, onChange }) {
                             </Form.Group>
                         </Col>
 
-                        <Col md={2}>
+                        <Col md={1}>
                             <Form.Group>
                                 <Form.Label>Original Price (₹)</Form.Label>
                                 <Form.Control
                                     type="text"
                                     autoComplete="off"
+                                    placeholder=''
                                     value={variant.original_price}
                                     onChange={(e) =>
                                         handleVariantChange(variantIndex, 'original_price', e.target.value)
@@ -140,11 +141,27 @@ function ProductVariantsForm({ baseUnits, variants, onChange }) {
                                 <Form.Control
                                     type="text"
                                     autoComplete="off"
-                                    // placeholder="Auto: Price/weight × 1000"
                                     placeholder=""
+                                    // placeholder="Auto: Price/weight × 1000"
                                     value={variant.unit_rate}
                                     onChange={(e) =>
                                         handleVariantChange(variantIndex, 'unit_rate', e.target.value)
+                                    }
+                                />
+                            </Form.Group>
+                        </Col>
+
+                        <Col md={1}>
+                            <Form.Group>
+                                <Form.Label>Stock</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    autoComplete="off"
+                                    placeholder=""
+                                    // placeholder="Auto: Price/weight × 1000"
+                                    value={variant.stock}
+                                    onChange={(e) =>
+                                        handleVariantChange(variantIndex, 'stock', e.target.stock)
                                     }
                                 />
                             </Form.Group>
@@ -201,7 +218,7 @@ function ProductVariantsForm({ baseUnits, variants, onChange }) {
                                     </Form.Group>
                                 </Col>
 
-                                <Col md={2}>
+                                <Col md={1}>
                                     <Form.Group>
                                         <Form.Label>Bulk Price</Form.Label>
                                         <Form.Control
@@ -219,18 +236,18 @@ function ProductVariantsForm({ baseUnits, variants, onChange }) {
                                     </Form.Group>
                                 </Col>
 
-                                <Col md={2}>
+                                <Col md={1}>
                                     <Form.Group>
                                         <Form.Label>Total Box Price</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            value={bulkRow.pieces_per_box * variant.price}
+                                            value={bulkRow.total_box_price}
                                             onChange={(e) =>
                                                 handleBulkChange(
                                                     variantIndex,
                                                     bulkIndex,
                                                     'total_box_price',
-                                                    bulkRow.pieces_per_box * variant.price
+                                                    e.target.value
                                                 )
                                             }
                                         />
@@ -242,10 +259,21 @@ function ProductVariantsForm({ baseUnits, variants, onChange }) {
                                         <Form.Label>Margin (%)</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            value={(((bulkRow.pieces_per_box * variant.price) - bulkRow.bulk_price) * 100) / (bulkRow.pieces_per_box * variant.price)}
-
+                                            value={bulkRow.margin}
                                             onChange={(e) =>
-                                                handleBulkChange(variantIndex, bulkIndex, 'margin', (((bulkRow.pieces_per_box * variant.price) - bulkRow.bulk_price) * 100) / bulkRow.pieces_per_box * variant.price)
+                                                handleBulkChange(variantIndex, bulkIndex, 'margin', e.target.value)
+                                            }
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={1}>
+                                    <Form.Group>
+                                        <Form.Label>Stock</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            value={bulkRow.stock}
+                                            onChange={(e) =>
+                                                handleBulkChange(variantIndex, bulkIndex, 'margin', e.target.stock)
                                             }
                                         />
                                     </Form.Group>
@@ -289,13 +317,13 @@ function ProductVariantsForm({ baseUnits, variants, onChange }) {
             ))}
 
             <Row className="mb-3">
-                <Col>
+                <Col md={2}>
                     <Button
                         variant="info"
-                        className="btn-sm btn-info mb-3 float-end"
+                        className="btn-sm waves-effect waves-light mb-3"
                         onClick={addVariant}
                     >
-                        <Plus size={16} /> Add More Variant
+                        <Plus /> Add More Variant
                     </Button>
                 </Col>
             </Row>
