@@ -506,4 +506,44 @@ class OrderController extends Controller
             // 'setting'       => null,
         ];
     }
+
+    public function cancel(Request $request)
+    {
+        $user = $request->user();
+
+        if (!$user) {
+            return ApiResponse::error('User is not authenticated.', 401);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'order_id' => 'required|exists:orders,id',
+            'notes' => 'nullable|string'
+        ]);
+
+        if ($validator->fails()) {
+            return ApiResponse::error('Validation failed', $validator->errors(), 422);
+        }
+
+        $validated = $validator->validated();
+
+        // Find order that belongs to user
+        $order = $user->orders()->where('id', $validated['order_id'])->first();
+
+        if (!$order) {
+            return ApiResponse::error('Order not found or does not belong to you.', 404);
+        }
+
+        // Update order
+        $order->update([
+            'status' => 'Cancelled',
+            'notes'  => $validated['notes'] ?? null,
+        ]);
+
+        // Update related order items
+        $order->orderItems()->update([
+            'status' => 'cancelled',
+        ]);
+
+        return ApiResponse::success('Order cancelled successfully.', $order);
+    }
 }

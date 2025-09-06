@@ -139,6 +139,12 @@ export default function SideMenu({ mobileMenu }) {
                     {openDropdowns.manageProduct && (
                         <ul className="sub-menu" aria-expanded="false">
                             <li><Link href="/admin/manage/activeproduct">Active Product</Link></li>
+                            <li><Link href="/admin/manage/brandedproduct">Branded Product</Link></li>
+                            <li><Link href="/admin/manage/populer-product">Populer Product</Link></li>
+                            <li><Link href="/admin/manage/sale-product">Product On Sale</Link></li>
+                            <li><Link href="/admin/manage/feature-product">Feature Product</Link></li>
+                            <li><Link href="/admin/manage/trending-product">Trending Product</Link></li>
+                            <li><Link href="/admin/manage/newarrival-product">New Arrival Product</Link></li>
                         </ul>
                     )}
                 </li>

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('invoice_no')->nullable();
-            $table->enum('status', ['Pending', 'Placed'])->default('Pending');
+            $table->enum('status', ['Pending', 'Placed', 'Cancelled'])->default('Pending');
             $table->text('shipping_address')->nullable();
 
             $table->enum('discount_type', ['Coupon Code', 'Redeem Points', 'Other', 'Both'])->nullable();

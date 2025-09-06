@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Retailer;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Order;
+use App\Models\OrderPayment;
 
 class AdminDashboardController extends Controller
 {
@@ -17,6 +19,8 @@ class AdminDashboardController extends Controller
             'pendingRetailers'  => Retailer::where('status', 0)->count(),
             'totalProducts'     => Product::count(),
             'superCategories'   => Category::count(),
+            'OrderAmount' => Order::sum('total_amount'),
+            'receivedPayment' => OrderPayment::where('status', 'verified')->sum('amount'),
         ]);
     }
 }

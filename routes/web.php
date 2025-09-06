@@ -89,6 +89,12 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 
     Route::prefix('manage')->group(function () {
         Route::get('activeproduct', [ProductController::class, 'active']);
+        Route::get('brandedproduct', [ProductController::class, 'brand']);
+        Route::get('populer-product', [ProductController::class, 'populer']);
+        Route::get('sale-product', [ProductController::class, 'sale']);
+        Route::get('feature-product', [ProductController::class, 'feature']);
+        Route::get('trending-product', [ProductController::class, 'trending']);
+        Route::get('newarrival-product', [ProductController::class, 'new_arrival']);
         Route::put('update-status/{product}', [ProductController::class, 'status']);
     });
 

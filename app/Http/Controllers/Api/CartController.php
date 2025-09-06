@@ -408,6 +408,6 @@ class CartController extends Controller
             ->orderByRaw('FIELD(id, ' . implode(',', $recentProductIds) . ')')
             ->get();
 
-        return ApiResponse::error('product as recent views',  $products);
+        return ApiResponse::success('product as recent views',  $products);
     }
 }

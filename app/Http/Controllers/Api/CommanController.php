@@ -255,41 +255,25 @@ class CommanController extends Controller
     }
 
 
-    public function applyRedeem(Request $request)
-    {
-        $order = new OrderController();
-        $user = $request->user();
-        if (!$user) {
-            return ApiResponse::error('User is not authenticated.', 401);
-        }
-
-        $validator = Validator::make($request->all(), [
-            'product_amount' => 'nullable|min:1|integer',
-        ]);
-
-        if ($validator->fails()) {
-            return ApiResponse::error('Validation failed', $validator->errors(), 422);
-        }
-
-        $points = $user->reward_points;
-        $total = $request->product_amount;
-
-
-        if ($points < 100) {
-            return response()->json(['status' => false, 'message' => 'Not enough redeem points!'], 422);
-        }
-
-        $redeem = $order->pointCheckout($points, $total);
-
-        return response()->json([
-            'redeem_discount' => $redeem['earned'],
-        ]);
-    }
-
-
 
     public function productFilter(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'category_id'    => 'nullable|exists:categories,id',
+            'subcategory_id' => 'nullable|array',
+            'subcategory_id.*' => 'nullable|exists:sub_categories,id',
+            'brand_id'       => 'nullable|exists:brands,id',
+            'disease_id'     => 'nullable|exists:diseases,id',
+            'min_price'      => 'nullable|numeric|min:0',
+            'max_price'      => 'nullable|numeric|gte:min_price',
+            'sort_by'        => 'nullable|string|in:popular,price_high_to_low,price_low_to_high,is_sale',
+        ]);
+
+        if ($validator->fails()) {
+            return ApiResponse::error($validator->errors()->first(), $validator->errors(), 422);
+        }
+
+
         // return  $request->all();
         $query = Product::with('images', 'variants', 'variants.bulkPrices')->where('is_active', true); // eager load relations
 
@@ -311,7 +295,7 @@ class CommanController extends Controller
 
         // ✅ Brand filter
         if ($request->filled('brand_id') && !empty($request->brand_id)) {
-            $query->where('brand_id', $request->brand_id);
+            $query->whereIn('brand_id', $request->brand_id);
         }
 
 
@@ -340,7 +324,6 @@ class CommanController extends Controller
             switch ($request->sort_by) {
                 case 'popular':
                     $query->orderBy('top_selling', 'desc');
-                    return   $products = $query->get();
                     break;
                 case 'price_high_to_low':
                     $query->withMin('variants', 'price')

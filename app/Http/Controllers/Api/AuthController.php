@@ -49,6 +49,10 @@ class AuthController extends Controller
 
     public function otp_verify(Request $request)
     {
+        $request->merge([
+            'phone' => (string) $request->phone,
+        ]);
+
         $validator = Validator::make($request->all(), [
             'phone' => 'required|digits:10|exists:users,phone',
             'otp'   => 'required|digits:6',
@@ -82,6 +86,20 @@ class AuthController extends Controller
         return ApiResponse::success('Login successful.', [
             'user'  => $user,
             'token' => $token,
+        ]);
+    }
+
+    public function profile(Request $request)
+    {
+        $user = $request->user();
+
+        if (!$user) {
+            return ApiResponse::error('User is not authenticated.', 401);
+        }
+
+        $user->load('retailer');
+        return ApiResponse::success('User Profile.', [
+            'user'  => $user,
         ]);
     }
 }

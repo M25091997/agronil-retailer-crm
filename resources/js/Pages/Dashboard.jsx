@@ -12,7 +12,9 @@ export default function Dashboard() {
         approvedRetailers: 0,
         pendingRetailers: 0,
         totalProducts: 0,
-        superCategories: 0
+        superCategories: 0,
+        OrderAmount: 0,
+        receivedPayment: 0,
     });
 
     useEffect(() => {
@@ -88,14 +90,14 @@ export default function Dashboard() {
                                 <div className="row align-items-center">
                                     <div className="col-6">
                                         <span className="text-muted mb-3 lh-1 d-block text-truncate">
-                                            Total Sales
+                                            Total Sales Order
                                         </span>
                                         <h4 className="mb-3">
                                             <span
                                                 className="counter-value"
                                                 data-target="6258"
                                             >
-                                                0
+                                                ₹ {dashboardData.OrderAmount}
                                             </span>
                                         </h4>
                                     </div>
@@ -108,11 +110,11 @@ export default function Dashboard() {
                                     </div>
                                 </div>
                                 <div className="text-nowrap">
-                                    <span className="badge badge-soft-danger text-danger">
-                                        -29 Trades
+                                    <span className="badge badge-soft-success ">
+                                        ₹ {dashboardData.receivedPayment}
                                     </span>
                                     <span className="ms-1 text-muted font-size-13">
-                                        Since last week
+                                        Received Payment
                                     </span>
                                 </div>
                             </div>

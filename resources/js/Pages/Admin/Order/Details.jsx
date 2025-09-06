@@ -73,7 +73,7 @@ export default function Details({ order }) {
                                     {/* Price + Status */}
                                     <div className="text-md-right mb-md-0 mb-3">
                                         <h5>${item.total}</h5>
-                                        <Badge pill variant="info">
+                                        <Badge pill variant={item.status == 'pending' ? 'info' : item.status == 'completed' ? 'success' : 'danger'}>
                                             {item.status} <i className="far fa-clock ml-1"></i>
                                         </Badge>
                                     </div>

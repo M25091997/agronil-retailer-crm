@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Artisan;
 Route::post('/login/phone', [AuthController::class, 'login']);
 Route::post('/verify/otp', [AuthController::class, 'otp_verify']);
 Route::get('/products', [CommanController::class, 'get_products']);
-Route::get('/similer-products', [CommanController::class, 'get_similerProducts']);
+Route::post('/similer-products', [CommanController::class, 'get_similerProducts']);
 Route::get('/categories', [CommanController::class, 'get_categories']);
 Route::get('/brands', [CommanController::class, 'get_brands']);
 Route::get('/diseases', [CommanController::class, 'get_diseases']);
@@ -33,7 +33,7 @@ Route::prefix('product')->group(function () {
 
 // Protected routes
 Route::middleware(['auth:api', 'api.auth'])->group(function () {
-    Route::get('/user/profile', [UserController::class, 'profile']);
+    Route::post('/user/profile', [AuthController::class, 'profile']);
     Route::post('retailer', [RetailerController::class, 'store']);
 
     Route::group(['prefix' => 'product'], function () {
@@ -55,6 +55,7 @@ Route::middleware(['auth:api', 'api.auth'])->group(function () {
         Route::get('/create', [OrderController::class, 'create_order']);
         Route::post('/checkout', [OrderController::class, 'checkout']);
         Route::get('', [OrderController::class, 'myOrder']);
+        Route::post('/cancel', [OrderController::class, 'cancel']);
     });
 
     Route::group(['prefix' => 'discount'], function () {

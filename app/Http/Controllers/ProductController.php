@@ -452,4 +452,45 @@ class ProductController extends Controller
             'product' => $product,
         ]);
     }
+
+    public function populer()
+    {
+        return Inertia::render('Admin/Product/Manage/PopulerProduct', [
+            'products' => Product::with('images')->active()->where('top_selling', 1)->latest()->get(),
+        ]);
+    }
+
+    public function sale()
+    {
+        return Inertia::render('Admin/Product/Manage/SaleProduct', [
+            'products' => Product::with('images')->active()->where('is_sale', 1)->latest()->get(),
+        ]);
+    }
+    public function trending()
+    {
+        return Inertia::render('Admin/Product/Manage/TrendingProduct', [
+            'products' => Product::with('images')->active()->where('trending', 1)->latest()->get(),
+        ]);
+    }
+
+    public function feature()
+    {
+        return Inertia::render('Admin/Product/Manage/FeatureProduct', [
+            'products' => Product::with('images')->active()->where('featured', 1)->latest()->get(),
+        ]);
+    }
+    public function new_arrival()
+    {
+        return Inertia::render('Admin/Product/Manage/NewArrivalProduct', [
+            'products' => Product::with('images')->active()->where('new_arrival', 1)->latest()->get(),
+        ]);
+    }
+
+
+    public function brand()
+    {
+        return Inertia::render('Admin/Product/Manage/BrandedProduct', [
+            'products' => Product::with('images')->active()->where('brand_id', '!=', '')->latest()->get(),
+        ]);
+    }
 }
