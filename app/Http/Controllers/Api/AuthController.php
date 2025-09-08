@@ -26,7 +26,7 @@ class AuthController extends Controller
 
         $user = User::firstOrCreate(
             ['phone' => $phone],
-            ['name' => '', 'email' => '', 'password' => Hash::make($phone), 'referral_code' =>  $phone]
+            ['name' => '', 'email' => $request->email, 'password' => Hash::make($phone), 'referral_code' =>  $phone]
         );
 
         // Generate & save OTP + expiry
@@ -58,6 +58,8 @@ class AuthController extends Controller
             'otp'   => 'required|digits:6',
         ]);
 
+        \Log::debug($request->all());
+
         if ($validator->fails()) {
             return ApiResponse::error('Validation failed', $validator->errors(), 422);
         }
@@ -83,6 +85,10 @@ class AuthController extends Controller
         $token = $user->createToken('authToken')->accessToken;
 
         $user->load('retailer');
+        
+        \Log::debug($user);
+        \Log::debug($token);
+
         return ApiResponse::success('Login successful.', [
             'user'  => $user,
             'token' => $token,
