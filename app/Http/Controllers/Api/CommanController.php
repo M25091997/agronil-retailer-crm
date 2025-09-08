@@ -13,6 +13,7 @@ use App\Models\Product;
 use App\Models\ProductBulkPrice;
 use App\Models\ProductVariant;
 use App\Models\RecentView;
+use App\Models\SubCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -39,6 +40,31 @@ class CommanController extends Controller
         } else {
             return   ApiResponse::success('Failed to get products');
         }
+    }
+
+    public function product_search(Request $request)
+    {
+        $query = Product::with(['images', 'variants', 'variants.bulkPrices'])
+            ->where('is_active', true);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhere('specification', 'like', "%{$search}%")
+                    ->orWhere('other_information', 'like', "%{$search}%")
+                    ->orWhere('sort_description', 'like', "%{$search}%")
+                    ->orWhere('tags', 'like', "%{$search}%")
+                    ->orWhere('sku', 'like', "%{$search}%");
+            });
+        } else {
+            return ApiResponse::success('No search term provided', []);
+        }
+
+        $products = $query->latest()->take(10)->get();
+
+        return ApiResponse::success('Product search results', $products);
     }
 
     public function get_similerProducts(Request $request)
@@ -356,5 +382,82 @@ class CommanController extends Controller
         }
 
         return ApiResponse::success('Tools Products', $products);
+    }
+
+    public function notifications(Request $request)
+    {
+        $user = $request->user();
+
+        if (!$user) {
+            return ApiResponse::error('User is not authenticated.', 401);
+        }
+
+        // Fetch notifications (latest first) with pagination
+        $notifications = $user->notifications()
+            ->latest()->take(10)->get();
+        // ->paginate(10);
+
+        return ApiResponse::success('User notifications fetched successfully.', $notifications);
+    }
+
+    // notification mark as read
+
+    public function read(Request $request)
+    {
+        $user = $request->user();
+
+        if (!$user) {
+            return ApiResponse::error('User is not authenticated.', 401);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'notification_id' => 'nullable|exists:notifications,id',
+        ]);
+
+        if ($validator->fails()) {
+            return ApiResponse::error($validator->errors()->first(), $validator->errors(), 422);
+        }
+
+        // Case 1: Mark a specific notification
+        if ($request->filled('notification_id')) {
+            $notification = $user->notifications()
+                ->where('id', $request->notification_id)
+                ->first();
+
+            if (!$notification) {
+                return ApiResponse::error('Notification not found.', 404);
+            }
+
+            $notification->update(['is_read' => true]);
+
+            return ApiResponse::success('Notification marked as read.', $notification);
+        }
+
+        // Case 2: Mark all notifications
+        $user->notifications()->update(['is_read' => true]);
+
+        return ApiResponse::success('All notifications marked as read.');
+    }
+
+
+    public function pesticide_products()
+    {
+        $products = SubCategory::where('category_id', 2)->whereIsActive()->get();
+
+        if ($products) {
+            return   ApiResponse::success('Product get successfully', $products);
+        } else {
+            return   ApiResponse::success('Failed to get products');
+        }
+    }
+
+    public function crop_products()
+    {
+        $products = SubCategory::where('category_id', 5)->whereIsActive()->get();
+        if ($products) {
+            return   ApiResponse::success('Product get successfully', $products);
+        } else {
+            return   ApiResponse::success('Failed to get products');
+        }
     }
 }

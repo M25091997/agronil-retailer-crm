@@ -8,6 +8,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DiscountCouponController;
 use App\Http\Controllers\DiseaseController;
 use App\Http\Controllers\HomeBannerController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RetailerController;
@@ -59,6 +60,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::resource('/base-unit', BaseUnitController::class);
     Route::resource('/home-banners', HomeBannerController::class);
     Route::resource('/products', ProductController::class);
+    Route::resource('/notifications', NotificationController::class);
 
     // api
     Route::get('/category/dependencies/{id}', [CategoryController::class, 'getDependencies']);
@@ -84,8 +86,9 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::prefix('/discount')->group(function () {
         Route::resource('/coupons', DiscountCouponController::class);
         Route::resource('/rewardsetting', RewardSettingController::class);
-        // Route::get('/coupons', [DiscountCouponController::class, 'index']);
     });
+
+
 
     Route::prefix('manage')->group(function () {
         Route::get('activeproduct', [ProductController::class, 'active']);

@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\CommanController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\RetailerController;
 use App\Http\Controllers\ShippingAddressController;
 use App\Models\Retailer;
@@ -23,6 +24,9 @@ Route::get('/brands', [CommanController::class, 'get_brands']);
 Route::get('/diseases', [CommanController::class, 'get_diseases']);
 Route::get('/silder-banners', [CommanController::class, 'get_silderBanners']);
 Route::post('/product-filter', [CommanController::class, 'productFilter']);
+Route::get('/product-search', [CommanController::class, 'product_search']);
+Route::get('/product/pesticides', [CommanController::class, 'pesticide_products']);
+Route::get('/product/crops', [CommanController::class, 'crop_products']);
 
 //products
 Route::prefix('product')->group(function () {
@@ -62,6 +66,11 @@ Route::middleware(['auth:api', 'api.auth'])->group(function () {
         Route::get('coupons', [CommanController::class, 'coupons']);
         Route::post('validate', [CommanController::class, 'discount_validate']);
         Route::post('redeem',  [CommanController::class, 'applyRedeem']);
+    });
+
+    Route::group(['prefix' => 'notifications'], function () {
+        Route::get('', [CommanController::class, 'notifications']);
+        Route::post('is_read', [CommanController::class, 'read']);
     });
 });
 

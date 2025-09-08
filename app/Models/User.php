@@ -72,6 +72,8 @@ class User extends Authenticatable
         return $this->hasOne(Retailer::class);
     }
 
+
+
     public function shippingAddress()
     {
         return $this->hasMany(ShippingAddress::class, 'user_id');
@@ -113,5 +115,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(RecentView::class, 'user_id')->latest('updated_at')
             ->limit(10);
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
     }
 }

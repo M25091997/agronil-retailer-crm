@@ -1,5 +1,5 @@
 import { Link, usePage } from "@inertiajs/react";
-import { Cog, House, Image, ShoppingBag, Users, Gift, Boxes, LayoutList } from "lucide-react";
+import { Cog, House, Image, ShoppingBag, Users, Gift, Boxes, LayoutList, BellPlus } from "lucide-react";
 import { useState } from "react";
 
 export default function SideMenu({ mobileMenu }) {
@@ -168,6 +168,8 @@ export default function SideMenu({ mobileMenu }) {
                         </ul>
                     )}
                 </li>
+
+                <li><Link href="/admin/notifications"><BellPlus /> Notifications</Link></li>
             </ul>
         </div>
     );
