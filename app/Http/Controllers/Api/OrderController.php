@@ -173,7 +173,8 @@ class OrderController extends Controller
             'discount_type' => 'nullable',
             'coupan_code' => 'nullable',
             'payment_slip' => 'required|file|mimes:jpg,jpeg,png,pdf|max:6048',
-            'is_redeem' => 'nullable|boolean'
+            'is_redeem' => 'nullable|boolean',
+            'type'        => 'nullable|in:cart,buy_now'
         ]);
 
         if ($validator->fails()) {
@@ -299,8 +300,25 @@ class OrderController extends Controller
                 ]);
             } // loop end
 
+            if ($request->filled('coupan_code')) {
+                $commanDiscount = new CommanController();
+                $request->merge([
+                    'code'        => $request->coupan_code,
+                    'order_value' => $total,
+                    'type'        => $request->type ?? 'cart',
+                ]);
 
-            $redeem = $this->pointCheckout($points, $total);
+
+                $response = $commanDiscount->discount_validate($request);
+                $responseData = $response->getData(true);
+
+                if (!empty($responseData['data']['discount'])) {
+                    $discount = $responseData['data']['discount'];
+                }
+            }
+
+
+            $redeem = $this->pointCheckout($points, ($total - $discount));
 
 
             if ($request->is_redeem && $redeem['redeem'] > 0) {

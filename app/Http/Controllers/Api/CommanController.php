@@ -21,6 +21,21 @@ use function Laravel\Prompts\error;
 
 class CommanController extends Controller
 {
+    public function termAndCondition()
+    {
+        return view('partical.termAndCondition');
+    }
+
+    public function privacyPolicy()
+    {
+        return view('partical.privacyPolicy');
+    }
+
+    public function cancellationRefund()
+    {
+        return view('partical.cancellationRefund');
+    }
+
     // category
     public function get_categories()
     {
@@ -277,6 +292,37 @@ class CommanController extends Controller
             'discount'       => $discountAmount,
             'final_total'    => $finalAmount,
             'coupon'         => $coupon->code
+        ]);
+    }
+
+    public function applyRedeem(Request $request)
+    {
+
+        $user = $request->user();
+        if (!$user) {
+            return ApiResponse::error('User is not authenticated.', 401);
+        }
+        $validator = Validator::make($request->all(), [
+            'product_amount' => 'required|integer|min:1',
+        ]);
+
+        if ($validator->fails()) {
+            return ApiResponse::error('Validation failed', $validator->errors(), 422);
+        }
+
+        $order = new OrderController();
+        $points = $user->reward_points;
+        $total = $request->product_amount;
+
+
+        if ($points < 100) {
+            return response()->json(['status' => false, 'message' => 'Not enough redeem points!'], 422);
+        }
+
+        $redeem = $order->pointCheckout($points, $total);
+
+        return response()->json([
+            'redeem_discount' => $redeem['earned'],
         ]);
     }
 

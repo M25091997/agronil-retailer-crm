@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\ApiResponse;
+use App\Http\Controllers\RetailerController;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
@@ -85,7 +86,7 @@ class AuthController extends Controller
         $token = $user->createToken('authToken')->accessToken;
 
         $user->load('retailer');
-        
+
         \Log::debug($user);
         \Log::debug($token);
 
@@ -107,5 +108,18 @@ class AuthController extends Controller
         return ApiResponse::success('User Profile.', [
             'user'  => $user,
         ]);
+    }
+
+    public function ledger(Request $request)
+    {
+        $user = $request->user();
+
+        if (!$user) {
+            return ApiResponse::error('User is not authenticated.', 401);
+        }
+
+        $retailer = new RetailerController();
+
+        return   $retailer->paymentLedger($user->id);
     }
 }

@@ -25,12 +25,13 @@ Route::get('/diseases', [CommanController::class, 'get_diseases']);
 Route::get('/silder-banners', [CommanController::class, 'get_silderBanners']);
 Route::post('/product-filter', [CommanController::class, 'productFilter']);
 Route::get('/product-search', [CommanController::class, 'product_search']);
-Route::get('/product/pesticides', [CommanController::class, 'pesticide_products']);
-Route::get('/product/crops', [CommanController::class, 'crop_products']);
+
 
 //products
 Route::prefix('product')->group(function () {
     Route::get('/tools', [CommanController::class, 'tools']);
+    Route::get('/pesticides', [CommanController::class, 'pesticide_products']);
+    Route::get('/crops', [CommanController::class, 'crop_products']);
 });
 
 
@@ -39,6 +40,7 @@ Route::prefix('product')->group(function () {
 Route::middleware(['auth:api', 'api.auth'])->group(function () {
     Route::post('/user/profile', [AuthController::class, 'profile']);
     Route::post('retailer', [RetailerController::class, 'store']);
+    Route::get('payment-ledger', [AuthController::class, 'ledger']);
 
     Route::group(['prefix' => 'product'], function () {
         Route::post('add-to-wishlist', [CartController::class, 'addToWishList']);
@@ -75,6 +77,9 @@ Route::middleware(['auth:api', 'api.auth'])->group(function () {
 });
 
 
+Route::get('term-and-condition', [CommanController::class, 'termAndCondition']);
+Route::get('privacy-policy', [CommanController::class, 'privacyPolicy']);
+Route::get('cancellation-refund', [CommanController::class, 'cancellationRefund']);
 
 Route::get('clear', function () {
     Artisan::call('optimize:clear');

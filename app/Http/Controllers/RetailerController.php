@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
 use App\Models\Retailer;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -146,5 +147,17 @@ class RetailerController extends Controller
             'status' => true,
             'message' => 'Retailer data deleted successfully!'
         ]);
+    }
+
+    public function paymentLedger($user)
+    {
+        $user = User::find($user);
+        $order =  $user->orders()->with('payments')->get();
+
+        if ($order) {
+            return   ApiResponse::success('All order Payment', $order);
+        } else {
+            return   ApiResponse::success('All order Payment', []);
+        }
     }
 }
