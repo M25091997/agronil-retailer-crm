@@ -422,7 +422,7 @@ class CommanController extends Controller
     // tools
     public function tools()
     {
-        $products = Product::with('images', 'variants', 'variants.bulkPrices')->where('category_id', 8)->whereIsActive()->get();
+        $products = Product::with('images', 'variants', 'variants.bulkPrices')->where('category_id', 3)->whereIsActive()->get();
         if (!$products) {
             return ApiResponse::success('Tools Products', []);
         }

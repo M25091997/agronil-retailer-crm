@@ -1,8 +1,8 @@
-export default function DashboardCard({ name, qty }) {
+export default function DashboardCard({ name, qty, bgcolor }) {
     return (
         <div className="card card-h-100">
             {/* <!-- card body --> */}
-            <div className="card-body">
+            <div className="card-body" style={{ backgroundColor: bgcolor, color: "#fff" }}>
                 <div className="row align-items-center">
                     <div className="col-6">
                         <span className="text-muted mb-3 lh-1 d-block text-truncate">

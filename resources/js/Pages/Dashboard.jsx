@@ -70,21 +70,21 @@ export default function Dashboard() {
 
                 <div className="row">
                     <div className="col-xl-3 col-md-6">
-                        <DashboardCard name="Total Approved Retailer" qty={dashboardData.approvedRetailers} />
+                        <DashboardCard name="Total Approved Retailer" qty={dashboardData.approvedRetailers} bgcolor="#b084fd" />
                     </div>
                     <div className="col-xl-3 col-md-6">
-                        <DashboardCard name="Total Pending Retailer" qty={dashboardData.pendingRetailers} />
+                        <DashboardCard name="Total Pending Retailer" qty={dashboardData.pendingRetailers} bgcolor="#ff9cbe" />
                     </div>
                     <div className="col-xl-3 col-md-6">
-                        <DashboardCard name="Total Products" qty={dashboardData.totalProducts} />
+                        <DashboardCard name="Total Products" qty={dashboardData.totalProducts} bgcolor="#4CAF50" />
                     </div>
                     <div className="col-xl-3 col-md-6">
-                        <DashboardCard name="Super Category" qty={dashboardData.superCategories} />
+                        <DashboardCard name="Super Category" qty={dashboardData.superCategories} bgcolor="#2196F3" />
                     </div>
 
                     <div className="col-xl-3 col-md-6">
                         {/* <!-- card --> */}
-                        <div className="card card-h-100">
+                        <div className="card card-h-100" style={{ backgroundColor: '#CDDC39', color: "#fff" }}>
                             {/* <!-- card body --> */}
                             <div className="card-body">
                                 <div className="row align-items-center">

@@ -70,6 +70,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::get('/approved', [RetailerController::class, 'approvedRetailer']);
         Route::get('/status-update/{retailer}', [RetailerController::class, 'statusUpdate']);
         Route::delete('/{retailer}', [RetailerController::class, 'destroy']);
+        Route::get('/{userId}/orders', [RetailerController::class, 'orders']);
     });
 
     Route::prefix('/orders')->group(function () {

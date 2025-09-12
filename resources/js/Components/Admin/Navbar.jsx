@@ -1,13 +1,18 @@
 import { Link, router } from "@inertiajs/react";
 import { Bell, CircleArrowRight, LayoutGrid, Moon, Search, Settings, Sun } from "lucide-react";
 import { useState } from "react";
+import NotificationDropdown from "./NotificationDropdown";
 export default function NavBar({ mobileMenu, setMobileMenu }) {
     const [open, setOpen] = useState(false);
+    const [notification, setNotification] = useState(false);
 
     const logoutHandle = () => {
         router.post('/logout');
     };
 
+    const handleNotificationIcon = () => {
+        setNotification(!notification);
+    };
 
     return (
         <div className="navbar-header">
@@ -16,19 +21,19 @@ export default function NavBar({ mobileMenu, setMobileMenu }) {
                 <div className="navbar-brand-box">
                     <Link href="/dashboard" className="logo logo-dark">
                         <span className="logo-sm">
-                            <img src="assets/images/logo-sm.svg" alt="" height="24" />
+                            <img src={BASE_URL + '/admin/assets/images/logo-sm.svg'} alt="logo" height="24" />
                         </span>
                         <span className="logo-lg">
-                            <img src="assets/images/logo-sm.svg" alt="" height="24" /> <span className="logo-txt">AGRINOSTAR</span>
+                            <img src={BASE_URL + '/admin/assets/images/logo-sm.svg'} alt="logo" height="24" /> <span className="logo-txt">AGRINOSTAR</span>
                         </span>
                     </Link>
 
                     <Link href="/dashboard" className="logo logo-light">
                         <span className="logo-sm">
-                            <img src="assets/images/logo-sm.svg" alt="" height="24" />
+                            <img src={BASE_URL + '/admin/assets/images/logo-sm.svg'} alt="logo" height="24" />
                         </span>
                         <span className="logo-lg">
-                            <img src="assets/images/logo-sm.svg" alt="" height="24" /> <span className="logo-txt">AGRINOSTAR </span>
+                            <img src={BASE_URL + '/admin/assets/images/logo-sm.svg'} alt="logo" height="24" /> <span className="logo-txt">AGRINOSTAR </span>
                         </span>
                     </Link>
                 </div>
@@ -85,23 +90,23 @@ export default function NavBar({ mobileMenu, setMobileMenu }) {
                         </form>
                     </div>
                 </div>
-
+                {/* 
                 <div className="dropdown d-none d-sm-inline-block">
                     <button type="button" className="btn header-item waves-effect" data-bs-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">
 
-                        <img className="me-2" src="assets/images/flags/us.jpg" alt="Header Language" height="16" />
+                        <img className="me-2" src={BASE_URL + '/admin/assets/images/flags/us.jpg'} alt="Header Language" height="16" />
 
                     </button>
                     <div className="dropdown-menu dropdown-menu-end">
 
-                        {/* <!-- item--> */}
+                 
                         <a href="?lang=en" className="dropdown-item notify-item language">
-                            <img src="assets/images/flags/us.jpg" alt="user-image" className="me-1" height="12" /> <span className="align-middle"> English </span>
+                            <img src={BASE_URL + '/admin/assets/images/flags/us.jpg'} alt="flag" className="me-1" height="12" /> <span className="align-middle"> English </span>
                         </a>
 
                     </div>
-                </div>
+                </div> */}
 
                 <div className="dropdown d-none d-sm-inline-block">
                     <button type="button" className="btn header-item" id="mode-setting-btn">
@@ -112,11 +117,10 @@ export default function NavBar({ mobileMenu, setMobileMenu }) {
                     </button>
                 </div>
 
-                <div className="dropdown d-none d-lg-inline-block ms-1">
+                {/* <div className="dropdown d-none d-lg-inline-block ms-1">
                     <button type="button" className="btn header-item"
                         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {/* <i data-feather="grid" className="icon-lg"></i>
-                                     */}
+                     
                         <LayoutGrid className="icon-lg" />
                     </button>
                     <div className="dropdown-menu dropdown-menu-lg dropdown-menu-end">
@@ -153,52 +157,9 @@ export default function NavBar({ mobileMenu, setMobileMenu }) {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
-                <div className="dropdown d-inline-block">
-                    <button type="button" className="btn header-item noti-icon position-relative" id="page-header-notifications-dropdown"
-                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {/* <i data-feather="bell" className="icon-lg"></i> */}
-                        <Bell className="icon-lg" />
-                        <span className="badge bg-danger rounded-pill">5</span>
-                    </button>
-                    <div className="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
-                        aria-labelledby="page-header-notifications-dropdown">
-                        <div className="p-3">
-                            <div className="row align-items-center">
-                                <div className="col">
-                                    <h6 className="m-0"> Notifications </h6>
-                                </div>
-                                <div className="col-auto">
-                                    <a href="#!" className="small text-reset text-decoration-underline"> alert (1)</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div data-simplebar style={{ maxHeight: '230px' }}>
-                            <a href="#!" className="text-reset notification-item">
-                                <div className="d-flex">
-                                    <div className="flex-shrink-0 me-3">
-                                        <img src="assets/images/users/avatar-3.jpg" className="rounded-circle avatar-sm" alt="user-pic" />
-                                    </div>
-                                    <div className="flex-grow-1">
-                                        <h6 className="mb-1">etwet</h6>
-                                        <div className="font-size-13 text-muted">
-                                            <p className="mb-1">456</p>
-                                            <p className="mb-0"><i className="mdi mdi-clock-outline"></i> <span>1h ago</span></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-
-                        </div>
-                        <div className="p-2 border-top d-grid">
-                            <a className="btn btn-sm btn-link font-size-14 text-center" href="javascript:void(0)">
-                                {/* <i className="mdi mdi-arrow-right-circle me-1"></i> */}
-                                <CircleArrowRight className="me-1" />  <span>View More</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                <NotificationDropdown />
 
                 <div className="dropdown d-inline-block">
                     <button type="button" className="btn header-item right-bar-toggle me-2">
@@ -215,8 +176,8 @@ export default function NavBar({ mobileMenu, setMobileMenu }) {
                     >
                         <img
                             className="rounded-circle header-profile-user"
-                            src="assets/images/users/avatar-1.jpg"
-                            alt="Header Avatar"
+                            src={BASE_URL + '/admin/assets/images/users/avatar-1.jpg'}
+                            alt="user-pic"
                         />
                         <span className="d-none d-xl-inline-block ms-1 fw-medium">Admin</span>
                         <i className="mdi mdi-chevron-down d-none d-xl-inline-block"></i>

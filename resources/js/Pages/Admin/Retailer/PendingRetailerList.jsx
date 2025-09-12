@@ -10,6 +10,8 @@ import { toast } from "react-toastify";
 
 export default function PendingRetailerList({ retailers }) {
     const [retailerList, setRetailerList] = useState(retailers)
+    const [showModal, setShowModal] = useState(false);
+    const [modelImage, setModelImage] = useState('');
 
     const handleDelete = async (id) => {
         if (!confirm('Are you sure you want to delete this Retailer ?')) return;
@@ -93,12 +95,17 @@ export default function PendingRetailerList({ retailers }) {
                                         <td>{retailer.email}</td>
 
                                         <td>
-                                            {retailer.profile_picture && (
+                                            {retailer?.profile_picture && (
                                                 <img
-                                                    src={`upload/${retailer.profile_picture}`}
-                                                    alt={retailer.name}
-                                                    width="100"
-                                                    height="100"
+                                                    src={retailer.profile_picture}
+                                                    alt="profile_picture"
+                                                    width={100}
+                                                    height={100}
+                                                    className="cursor-pointer rounded shadow"
+                                                    onClick={() => {
+                                                        setShowModal(true);
+                                                        setModelImage(retailer.profile_picture);
+                                                    }}
                                                 />
                                             )}
                                         </td>
@@ -108,45 +115,74 @@ export default function PendingRetailerList({ retailers }) {
                                         <td>{retailer.state}</td>
                                         <td>{retailer.pincode}</td>
                                         <td>
-                                            {retailer.shop_image && (
+                                            {retailer?.shop_image && (
                                                 <img
-                                                    src={`upload/${retailer.shop_image}`}
-                                                    alt='Shop Image'
-                                                    width="100"
-                                                    height="100"
+                                                    src={retailer.shop_image}
+                                                    alt="shop image"
+                                                    width={100}
+                                                    height={100}
+                                                    className="cursor-pointer rounded shadow"
+                                                    onClick={() => {
+                                                        setShowModal(true);
+                                                        setModelImage(retailer.shop_image);
+                                                    }}
+                                                />
+                                            )}
+
+                                        </td>
+                                        <td>
+                                            {retailer?.registration_certificate && (
+                                                <img
+                                                    src={retailer.registration_certificate}
+                                                    alt="thumbnail"
+                                                    width={100}
+                                                    height={100}
+                                                    className="cursor-pointer rounded shadow"
+                                                    onClick={() => {
+                                                        setShowModal(true);
+                                                        setModelImage(retailer.registration_certificate);
+                                                    }}
                                                 />
                                             )}
                                         </td>
-                                        <td>
-                                            {retailer.registration_certificate && (
-                                                <img
+
+                                        {/* <img
                                                     // src={`${import.meta.env.VITE_BASE_URL}${retailer.registration_certificate}`}
-                                                    src={`${BASE_URL}${retailer.registration_certificate}`}
+                                                    src={retailer.registration_certificate}
                                                     alt="Reg. certificate"
                                                     width="100"
                                                     height="100"
+                                                /> */}
+                                        <td>
+                                            {retailer?.pan_card && (
+                                                <img
+                                                    src={retailer.pan_card}
+                                                    alt="pan_card"
+                                                    width={100}
+                                                    height={100}
+                                                    className="cursor-pointer rounded shadow"
+                                                    onClick={() => {
+                                                        setShowModal(true);
+                                                        setModelImage(retailer.pan_card);
+                                                    }}
                                                 />
                                             )}
                                         </td>
                                         <td>
-                                            {retailer.pan_card && (
+                                            {retailer?.aadhaar_card && (
                                                 <img
-                                                    src={`upload/${retailer.pan_card}`}
-                                                    alt="Pan card"
-                                                    width="100"
-                                                    height="100"
+                                                    src={retailer.aadhaar_card}
+                                                    alt="aadhaar_card"
+                                                    width={100}
+                                                    height={100}
+                                                    className="cursor-pointer rounded shadow"
+                                                    onClick={() => {
+                                                        setShowModal(true);
+                                                        setModelImage(retailer.aadhaar_card);
+                                                    }}
                                                 />
                                             )}
-                                        </td>
-                                        <td>
-                                            {retailer.aadhaar_card && (
-                                                <img
-                                                    src={`upload/${retailer.aadhaar_card}`}
-                                                    alt='Aadhaar card'
-                                                    width="100"
-                                                    height="100"
-                                                />
-                                            )}
+
                                         </td>
                                         <td>
                                             <Badge pill bg={retailer.status ? 'success' : 'secondary'} style={{ cursor: 'pointer' }} onClick={() => handlePendigButton(retailer.id)}>
@@ -171,6 +207,32 @@ export default function PendingRetailerList({ retailers }) {
                             </tbody>
                         </table>
 
+                        {/* Fullscreen Modal */}
+                        {showModal && (
+                            <div
+                                className="modal fade show"
+                                style={{ display: "block", backgroundColor: "rgba(0,0,0,0.8)" }}
+                                onClick={() => setShowModal(false)}
+                            >
+                                <div
+                                    className="modal-dialog modal-dialog-centered modal-lg"
+                                    onClick={(e) => e.stopPropagation()} // prevent close when clicking on image
+                                >
+                                    <div className="modal-content bg-transparent border-0 shadow-none">
+                                        <img
+                                            src={modelImage}
+                                            alt="full"
+                                            className="img-fluid rounded"
+                                        />
+                                        <button
+                                            type="button"
+                                            className="btn-close btn-close-white position-absolute top-0 end-0 m-3"
+                                            onClick={() => setShowModal(false)}
+                                        ></button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </Card.Body>
                 </Card>
             </Row>

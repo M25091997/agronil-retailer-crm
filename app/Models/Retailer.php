@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Retailer extends Model
 {
@@ -21,5 +22,27 @@ class Retailer extends Model
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
-    
+
+    public function getProfilePictureAttribute($value)
+    {
+        return $value ? Storage::disk('public')->url($value) : '';
+    }
+
+    public function getShopImageAttribute($value)
+    {
+        return $value ? Storage::disk('public')->url($value) : '';
+    }
+
+    public function getRegistrationCertificateAttribute($value)
+    {
+        return $value ? Storage::disk('public')->url($value) : '';
+    }
+    public function getPanCardAttribute($value)
+    {
+        return $value ? Storage::disk('public')->url($value) : '';
+    }
+    public function getAadhaarCardAttribute($value)
+    {
+        return $value ? Storage::disk('public')->url($value) : '';
+    }
 }

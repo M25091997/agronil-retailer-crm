@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
+use App\Models\OrderItem;
 use App\Models\Retailer;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -52,19 +53,34 @@ class RetailerController extends Controller
      */
     public function store(Request $request)
     {
+        // $validator = Validator::make($request->all(), [
+        //     'name' => 'required|string|max:255',
+        //     'email' => 'nullable|email|max:255',
+        //     'address' => 'required|string',
+        //     'city' => 'required|string|max:100',
+        //     'state' => 'required|string|max:100',
+        //     'pincode' => 'required|digits:6',
+        //     'profile_picture' => 'nullable|image|max:2048',
+        //     'shop_image' => 'nullable|image|max:2048',
+        //     'registration_certificate' => 'nullable|file|max:2048',
+        //     'pan_card' => 'nullable|file|max:2048',
+        //     'aadhaar_card' => 'nullable|file|max:2048',
+        // ]);
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'email' => 'nullable|email|max:255',
+            'email' => 'nullable|email|max:255|unique:users,email',
             'address' => 'required|string',
             'city' => 'required|string|max:100',
             'state' => 'required|string|max:100',
-            'pincode' => 'required|digits:6',
-            'profile_picture' => 'nullable|image|max:2048',
-            'shop_image' => 'nullable|image|max:2048',
-            'registration_certificate' => 'nullable|file|max:2048',
-            'pan_card' => 'nullable|file|max:2048',
-            'aadhaar_card' => 'nullable|file|max:2048',
+            'pincode' => ['required', 'regex:/^[1-9][0-9]{5}$/'],
+            'profile_picture' => 'nullable|mimes:jpg,jpeg,png|max:2048',
+            'shop_image' => 'nullable|mimes:jpg,jpeg,png|max:2048',
+            'registration_certificate' => 'required|mimes:pdf,jpg,jpeg,png|max:2048',
+            'pan_card' => 'nullable|mimes:pdf,jpg,jpeg,png|max:2048',
+            'aadhaar_card' => 'required|mimes:pdf,jpg,jpeg,png|max:2048',
         ]);
+
 
         if ($validator->fails()) {
             return ApiResponse::error('Validation failed', $validator->errors(), 422);
@@ -85,9 +101,13 @@ class RetailerController extends Controller
         foreach (['profile_picture', 'shop_image', 'registration_certificate', 'pan_card', 'aadhaar_card'] as $field) {
             if ($request->hasFile($field)) {
                 $path = $request->file($field)->store($uploadPath, 'public');
-                $data[$field] = Storage::url($path); // gives /storage/uploads/retailers/filename.jpg
+                $data[$field] = $path;
+
+                // $data[$field] = Storage::url($path); // gives /storage/uploads/retailers/filename.jpg
             }
         }
+
+        // return $data;
 
 
         // Save retailer
@@ -104,14 +124,23 @@ class RetailerController extends Controller
                 'shop_image' => $data['shop_image'] ?? '',
                 'registration_certificate' => $data['registration_certificate'] ?? '',
                 'pan_card' => $data['pan_card'] ?? '',
-                'addhar_card' => $data['addhar_card'] ?? '',
+                'aadhaar_card' => $data['aadhaar_card'] ?? '',
                 'status' => 0,
             ]
         );
 
-        return ApiResponse::success('Retailer saved successfully, Wait for approval', [
-            'data' => $retailer,
+        // Also update user table
+        $user = Auth::user();
+        $user->update([
+            'name'  => $data['name'],
+            'email' => $data['email'] ?? $user->email,
+            'profile_picture' => $data['profile_picture'] ?? $user->profile_picture,
+            'city' => $data['city'] ?? $user->city,
+            'role' => 'retailer',
         ]);
+
+
+        return ApiResponse::success('Retailer saved successfully, Wait for approval', $retailer);
     }
 
     /**
@@ -159,5 +188,18 @@ class RetailerController extends Controller
         } else {
             return   ApiResponse::success('All order Payment', []);
         }
+    }
+
+    public function orders($userId)
+    {
+        $orders = OrderItem::with(['order', 'order.user', 'product'])
+            ->whereHas('order', function ($q) use ($userId) {
+                $q->where('user_id', $userId);
+            })
+            ->get();
+
+        return Inertia::render('Admin/Retailer/OrderReports', [
+            'orders' => $orders,
+        ]);
     }
 }
