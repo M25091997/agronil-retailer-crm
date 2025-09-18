@@ -25,7 +25,7 @@ class NotificationController extends Controller
     {
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
-            'type'    => 'required|string|in:system,order,product',
+            'type'    => 'required|string|in:system,order,payment,shipping,product,offer',
             'title'   => 'required|string|max:255',
             'message' => 'required|string',
         ]);
